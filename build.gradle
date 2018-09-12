@@ -202,7 +202,7 @@ if (settings.reformat) {
 				zipIn.entries().each { entryIn ->
 					def entryOut = new ZipEntry(entryIn.getName())
 					zipOut.putNextEntry(entryOut)
-					if (entryIn.getName().endsWith('.java')) {
+					if (entryIn.getName().endsWith('.java') && !entryIn.getName().endsWith("package-info.java")) {
 						StringWriter sw = new StringWriter()
 						try {
 							formatter.format(new InputStreamReader(zipIn.getInputStream(entryIn)), sw)
