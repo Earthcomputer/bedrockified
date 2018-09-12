@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurper
 
-def settings = new JsonSlurper().parseText(file('settings.json').text)
+def settings = new JsonSlurper().parseText(file('conf/settings.json').text)
 
 rootProject.name = settings.modname.substring(0, 1).toUpperCase(Locale.ENGLISH) + settings.modname.substring(1)
 

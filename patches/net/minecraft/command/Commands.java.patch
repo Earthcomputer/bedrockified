@@ -6,15 +6,15 @@
  
 +import com.example.mod.FillLimitCommand;
 +
- public class Commands {
-    private static final Logger field_197061_a = LogManager.getLogger();
-    private final CommandDispatcher<CommandSource> field_197062_b = new CommandDispatcher<CommandSource>();
-@@ -161,6 +163,8 @@
-          StopCommand.func_198725_a(this.field_197062_b);
-          WhitelistCommand.func_198873_a(this.field_197062_b);
-       }
-+      
-+      FillLimitCommand.register(this.field_197062_b);
+ public class Commands
+ {
+     private static final Logger LOGGER = LogManager.getLogger();
+@@ -165,6 +167,8 @@
+             StopCommand.register(this.dispatcher);
+             WhitelistCommand.register(this.dispatcher);
+         }
++        
++        FillLimitCommand.register(this.dispatcher);
  
-       this.field_197062_b.findAmbiguities((p_201302_1_, p_201302_2_, p_201302_3_, p_201302_4_) -> {
-          field_197061_a.warn("Ambiguity between arguments {} and {} with inputs: {}", this.field_197062_b.getPath(p_201302_2_), this.field_197062_b.getPath(p_201302_3_), p_201302_4_);
+         this.dispatcher.findAmbiguities((p_201302_1_, p_201302_2_, p_201302_3_, p_201302_4_) ->
+         {

@@ -1,0 +1,10 @@
+{
+	"modname": "examplemod",
+	"mcpconfig": "1.13-2018.09.12.04.11.00",
+	"mappings": "20180912-1.13",
+	"mcversion": "1.13",
+	"pipeline": "joined",
+	"clientmain": "net.minecraft.client.main.Main",
+	"servermain": "net.minecraft.server.MinecraftServer",
+	"reformat": true
+}

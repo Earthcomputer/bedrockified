@@ -6,17 +6,18 @@
  
 +import com.example.mod.FillLimitCommand;
 +
- public class CloneCommand {
-    private static final SimpleCommandExceptionType field_198284_b = new SimpleCommandExceptionType(new TextComponentTranslation("commands.clone.overlap", new Object[0]));
-    private static final Dynamic2CommandExceptionType field_198285_c = new Dynamic2CommandExceptionType((p_208796_0_, p_208796_1_) -> {
-@@ -85,8 +87,8 @@
-          throw field_198284_b.create();
-       } else {
-          int i = mutableboundingbox.getXSize() * mutableboundingbox.getYSize() * mutableboundingbox.getZSize();
--         if (i > 32768) {
--            throw field_198285_c.create(32768, i);
-+         if (false && i > FillLimitCommand.fillLimit) { // Examplemod: fill limit
-+            throw field_198285_c.create(FillLimitCommand.fillLimit, i);
-          } else {
-             WorldServer worldserver = p_198274_0_.func_197023_e();
-             if (worldserver.isAreaLoaded(mutableboundingbox) && worldserver.isAreaLoaded(mutableboundingbox1)) {
+ public class CloneCommand
+ {
+     private static final SimpleCommandExceptionType OVERLAP_EXCEPTION = new SimpleCommandExceptionType(new TextComponentTranslation("commands.clone.overlap", new Object[0]));
+@@ -109,9 +111,9 @@
+         {
+             int i = mutableboundingbox.getXSize() * mutableboundingbox.getYSize() * mutableboundingbox.getZSize();
+ 
+-            if (i > 32768)
++            if (i > FillLimitCommand.fillLimit)
+             {
+-                throw CLONE_TOO_BIG_EXCEPTION.create(32768, i);
++                throw CLONE_TOO_BIG_EXCEPTION.create(FillLimitCommand.fillLimit, i);
+             }
+             else
+             {
