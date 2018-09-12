@@ -1,0 +1,22 @@
+--- a/net/minecraft/command/impl/FillCommand.java
++++ b/net/minecraft/command/impl/FillCommand.java
+@@ -28,6 +28,8 @@
+ import net.minecraft.util.text.TextComponentTranslation;
+ import net.minecraft.world.WorldServer;
+ 
++import com.example.mod.FillLimitCommand;
++
+ public class FillCommand {
+    private static final Dynamic2CommandExceptionType field_198473_a = new Dynamic2CommandExceptionType((p_208897_0_, p_208897_1_) -> {
+       return new TextComponentTranslation("commands.fill.toobig", new Object[]{p_208897_0_, p_208897_1_});
+@@ -59,8 +61,8 @@
+ 
+    private static int func_198463_a(CommandSource p_198463_0_, MutableBoundingBox p_198463_1_, BlockStateInput p_198463_2_, FillCommand.Mode p_198463_3_, @Nullable Predicate<BlockWorldState> p_198463_4_) throws CommandSyntaxException {
+       int i = p_198463_1_.getXSize() * p_198463_1_.getYSize() * p_198463_1_.getZSize();
+-      if (i > 32768) {
+-         throw field_198473_a.create(32768, i);
++      if (false && i > FillLimitCommand.fillLimit) { // Examplemod: fill limit
++         throw field_198473_a.create(FillLimitCommand.fillLimit, i);
+       } else {
+          List<BlockPos> list = Lists.<BlockPos>newArrayList();
+          WorldServer worldserver = p_198463_0_.func_197023_e();

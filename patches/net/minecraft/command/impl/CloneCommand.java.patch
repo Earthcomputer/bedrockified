@@ -1,0 +1,22 @@
+--- a/net/minecraft/command/impl/CloneCommand.java
++++ b/net/minecraft/command/impl/CloneCommand.java
+@@ -26,6 +26,8 @@
+ import net.minecraft.util.text.TextComponentTranslation;
+ import net.minecraft.world.WorldServer;
+ 
++import com.example.mod.FillLimitCommand;
++
+ public class CloneCommand {
+    private static final SimpleCommandExceptionType field_198284_b = new SimpleCommandExceptionType(new TextComponentTranslation("commands.clone.overlap", new Object[0]));
+    private static final Dynamic2CommandExceptionType field_198285_c = new Dynamic2CommandExceptionType((p_208796_0_, p_208796_1_) -> {
+@@ -85,8 +87,8 @@
+          throw field_198284_b.create();
+       } else {
+          int i = mutableboundingbox.getXSize() * mutableboundingbox.getYSize() * mutableboundingbox.getZSize();
+-         if (i > 32768) {
+-            throw field_198285_c.create(32768, i);
++         if (false && i > FillLimitCommand.fillLimit) { // Examplemod: fill limit
++            throw field_198285_c.create(FillLimitCommand.fillLimit, i);
+          } else {
+             WorldServer worldserver = p_198274_0_.func_197023_e();
+             if (worldserver.isAreaLoaded(mutableboundingbox) && worldserver.isAreaLoaded(mutableboundingbox1)) {
