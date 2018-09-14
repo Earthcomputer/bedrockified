@@ -10,6 +10,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
 		classpath 'com.github.abrarsyed.jastyle:jAstyle:1.3'
 		classpath 'com.google.code.gson:gson:2.8.0' // because groovy JsonGenerator doesn't exist wtf
+		classpath 'commons-io:commons-io:2.6'
 		classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.3" // For debug purposes
     }
 }
@@ -20,6 +21,7 @@ import com.google.gson.GsonBuilder
 import groovy.json.JsonSlurper
 import java.util.zip.*
 import net.minecraftforge.gradle.patcher.task.TaskExtractMCPData
+import org.apache.commons.io.IOUtils
 
 def settings = new JsonSlurper().parseText(file('conf/settings.json').text)
 
@@ -127,6 +129,7 @@ project(':' + settings.modname) {
 		*/
     }
 
+	/*
     configurations {
         ecj
     }
@@ -143,6 +146,7 @@ project(':' + settings.modname) {
             jvmArgs = ['-classpath', project.configurations.ecj.asPath, 'org.eclipse.jdt.internal.compiler.batch.Main', '-nowarn', '-proceedOnError', '-preserveAllLocals', '-parameters']
         }
     }
+	*/
 
     task runclient(type: JavaExec, dependsOn: [":" + settings.modname + ":downloadAssets", ":" + settings.modname + ":extractNatives"]) {
         doFirst {
@@ -274,4 +278,31 @@ for (def projname in [':clean', ':' + settings.modname]) {
 		reobfArgs << '--kill-lvt'
 		reobfJar.args = reobfArgs.toArray([] as String[])
 	}
+}
+
+// ===== RELEASE TASK ===== //
+task(createRelease, type: Zip)
+{
+	from(zipTree(project(':' + settings.modname).reobfJar.output))
+	{
+		eachFile
+		{ moddedFile ->
+			def entryName = moddedFile.getRelativePath().toString()
+			def vanillaJar = new ZipFile(file(project(':clean').reobfJar.output))
+			def vanillaEntry = vanillaJar.getEntry entryName
+			if (vanillaEntry != null)
+			{
+				def moddedJar = new ZipFile(file(project(':' + settings.modname).reobfJar.output))
+				def moddedEntry = moddedJar.getEntry entryName
+				if (IOUtils.contentEquals(vanillaJar.getInputStream(vanillaEntry), moddedJar.getInputStream(moddedEntry)))
+					moddedFile.exclude()
+			}
+		}
+	}
+	
+	archiveName = "${settings.modname}_${project.version}.zip"
+	destinationDir = file('build/distributions')
+	includeEmptyDirs = false
+	
+	dependsOn ':clean:reobfJar', ':' + settings.modname + ':reobfJar'
 }
