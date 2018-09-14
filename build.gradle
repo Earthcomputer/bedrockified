@@ -185,10 +185,15 @@ project(':' + settings.modname) {
 task setup() {
     dependsOn ':clean:extractMapped'
     dependsOn ':' + settings.modname + ':extractMapped' //These must be strings so that we can do lazy resolution. Else we need evaluationDependsOnChildren above
-	
-	dependsOn ':clean:extractSrg'
 }
 
+// ===== FIXES ===== //
+
+// Fix recompilation requiring extractSrg output
+setup.dependsOn ':clean:extractSrg'
+
+// Fix https://github.com/MinecraftForge/ForgeGradle/issues/517 - FG3 server pipeline missing download version JSON
+// Also fix recompile error on server due to mcp.client.Start being present
 if (settings.pipeline == 'server') {
 	project(':mcp') {
 		downloadConfig.output = file('build/mcp_config_broken.zip')
@@ -219,6 +224,7 @@ if (settings.pipeline == 'server') {
 	}
 }
 
+// Fix formatting, optionally
 if (settings.reformat) {
 	project(':mcp') {
 		task reformat {
@@ -260,9 +266,12 @@ if (settings.reformat) {
 	}
 }
 
-project(':' + settings.modname) {
-	def reobfArgs = []
-	reobfJar.args.each {reobfArgs << it}
-	reobfArgs << '--kill-lvt'
-	reobfJar.args = reobfArgs.toArray([] as String[])
+// Fix reobf error due to local variable signatures (with lambdas?). Apply to both clean and modded to keep the classes the same
+for (def projname in [':clean', ':' + settings.modname]) {
+	project(projname) {
+		def reobfArgs = []
+		reobfJar.args.each {reobfArgs << it}
+		reobfArgs << '--kill-lvt'
+		reobfJar.args = reobfArgs.toArray([] as String[])
+	}
 }
