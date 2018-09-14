@@ -9,6 +9,7 @@ There is currently no support for Intellij IDEA - you have to figure that out yo
 
 ## First-time setup
 - Copy all the files in this repository into your new project folder.
+- Delete the example mod from inside `patches` (do not delete the `patches` directory itself) and from inside`src/main/java`.
 - Install ForgeGradle 3.0 by running the `install_fg3.bat` batch file from the command line on Windows, or running the `install_fg3.sh` script on Linux or Mac OS.
 - Edit `conf/settings.json` for your project. Each setting is described in more detail below.
 - Run `gradlew setup` to decompile and deobfuscate the code.
