@@ -4,7 +4,7 @@
 	"mappings": "20180912-1.13",
 	"mcversion": "1.13",
 	"pipeline": "joined",
-	"clientmain": "net.minecraft.client.main.Main",
+	"clientmain": "mcp.client.Start",
 	"servermain": "net.minecraft.server.MinecraftServer",
-	"reformat": true
+	"reformat": false
 }
