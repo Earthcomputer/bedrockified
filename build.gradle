@@ -19,7 +19,7 @@ import com.github.abrarsyed.jastyle.OptParser;
 import com.google.gson.GsonBuilder
 import groovy.json.JsonSlurper
 import java.util.zip.*
-//import org.apache.commons.io.IOUtils
+import net.minecraftforge.gradle.patcher.task.TaskExtractMCPData
 
 def settings = new JsonSlurper().parseText(file('conf/settings.json').text)
 
@@ -185,6 +185,8 @@ project(':' + settings.modname) {
 task setup() {
     dependsOn ':clean:extractMapped'
     dependsOn ':' + settings.modname + ':extractMapped' //These must be strings so that we can do lazy resolution. Else we need evaluationDependsOnChildren above
+	
+	dependsOn ':clean:extractSrg'
 }
 
 if (settings.pipeline == 'server') {
@@ -256,4 +258,11 @@ if (settings.reformat) {
 		applyPatches.dependsOn project(':mcp').reformat
 		applyPatches.setClean(project(':mcp').file('build/reformat/output.zip'))
 	}
+}
+
+project(':' + settings.modname) {
+	def reobfArgs = []
+	reobfJar.args.each {reobfArgs << it}
+	reobfArgs << '--kill-lvt'
+	reobfJar.args = reobfArgs.toArray([] as String[])
 }

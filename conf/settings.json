@@ -6,5 +6,5 @@
 	"pipeline": "joined",
 	"clientmain": "mcp.client.Start",
 	"servermain": "net.minecraft.server.MinecraftServer",
-	"reformat": false
+	"reformat": true
 }
