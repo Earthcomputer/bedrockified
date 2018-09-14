@@ -35,7 +35,7 @@ apply plugin: 'eclipse'
 //apply plugin: "com.dorongold.task-tree" // For debug purposes
 
 group = 'com.example'
-version = '1.0'
+version = settings.modversion
 
 
 // subprojects
