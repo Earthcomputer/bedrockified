@@ -350,6 +350,7 @@ if (settings.pipeline == 'joined') {
 	for (def projname : [':clean', ':' + settings.modname]) {
 		project(projname) {
 			def dists = ['Client', 'Server']
+			def unwantedDists = ['DEDICATED_SERVER', 'CLIENT']
 			for (def i = 0; i < 2; i++) {
 				def idx = i
 				task('filterDist' + dists[idx]) {
@@ -359,7 +360,7 @@ if (settings.pipeline == 'joined') {
 					doLast {
 						filterJar(file(reobfJar.output), file('build/filterDist' + dists[idx] + '/output.zip')) { filename, istream ->
 							if (filename.endsWith('.class')) {
-								return DistUtils.stripDist(istream, dists[1 - idx].toUpperCase(Locale.ENGLISH)) { classname ->
+								return DistUtils.stripDist(istream, unwantedDists[idx]) { classname ->
 									def zip = new ZipFile(file(reobfJar.output))
 									return zip.getInputStream(zip.getEntry(classname + '.class'))
 								}
