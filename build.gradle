@@ -4,7 +4,7 @@ buildscript {
         maven { url = 'http://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
-		maven {url 'http://plugins.gradle.org/m2/'} // For debug purposes
+		//maven {url 'http://plugins.gradle.org/m2/'} // For debug purposes
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
@@ -12,7 +12,7 @@ buildscript {
 		classpath 'com.google.code.gson:gson:2.8.0' // because groovy JsonGenerator doesn't exist wtf
 		classpath 'commons-io:commons-io:2.6'
 		classpath 'org.ow2.asm:asm-debug-all:5.2'
-		classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.3" // For debug purposes
+		//classpath "gradle.plugin.com.dorongold.plugins:task-tree:1.3" // For debug purposes
     }
 }
 
@@ -26,6 +26,9 @@ import org.apache.commons.io.IOUtils
 import org.objectweb.asm.*
 import org.objectweb.asm.tree.*
 
+// ===== MAIN BUILDSCRIPT ===== //
+
+// configuration
 def settings = new JsonSlurper().parseText(file('conf/settings.json').text)
 
 apply plugin: 'eclipse'
@@ -34,6 +37,9 @@ apply plugin: "com.dorongold.task-tree" // For debug purposes
 group = 'com.example'
 version = '1.0'
 
+
+// subprojects
+
 project(':mcp') {
     apply plugin: 'net.minecraftforge.gradle.forgedev.mcp'
     mcp {
@@ -41,6 +47,7 @@ project(':mcp') {
         pipeline = settings.pipeline
     }
 }
+
 
 project(':clean') {
     evaluationDependsOn(':mcp')
@@ -66,6 +73,7 @@ project(':clean') {
     }
 }
 
+
 project(':' + settings.modname) {
     evaluationDependsOn(':clean')
     apply plugin: 'eclipse'
@@ -88,27 +96,15 @@ project(':' + settings.modname) {
         parent = project(':clean')
         patches = file("$rootDir/patches")
         patchedSrc = file('src/main/java')
-        //accessTransformer = file("$rootDir/src/main/resources/forge_at.cfg")
         srgPatches = false
         clientRun {
             main = settings.clientmain
-			/*
-            environment = [
-                //target: 'fmldevclient'
-            ]
-			*/
             properties = [
-                //target: 'fmldevclient',
                 assetDirectory: downloadAssets.output
             ]
         }
         serverRun {
             main = settings.servermain
-			/*
-            environment = [
-                //target: 'fmldevserver'
-            ]
-			*/
         }
     }
     applyPatches {
@@ -117,39 +113,8 @@ project(':' + settings.modname) {
         maxFuzz 3
     }
     dependencies {
-		/*
-        implementation 'net.minecraft:client:1.13:extra'
-        implementation 'cpw.mods:modlauncher:0.1.0-rc.3' //Pinned until cpw fixes getCommonSupertype
-        implementation 'net.minecraftforge:accesstransformers:0.10+:shadowed'
-        implementation 'net.minecraftforge:eventbus:0.1+:service'
-        implementation 'net.minecraftforge:forgespi:0.1+'
-        implementation 'net.minecraftforge:coremods:0.1+'
-        implementation 'com.electronwill.night-config:core:3.4.0'
-        implementation 'com.electronwill.night-config:toml:3.4.0'
-        implementation 'org.jline:jline:3.5.1'
-        implementation 'org.apache.maven:maven-artifact:3.5.3'
-        implementation 'java3d:vecmath:1.5.2'
-		*/
+		// Add extra dependencies here
     }
-
-	/*
-    configurations {
-        ecj
-    }
-
-    dependencies {
-        ecj 'org.eclipse.jdt.core.compiler:ecj:4.6.1'
-    }
-
-    compileJava {
-        options.fork = true
-        options.failOnError = false
-        options.forkOptions.with {
-            executable = 'java'
-            jvmArgs = ['-classpath', project.configurations.ecj.asPath, 'org.eclipse.jdt.internal.compiler.batch.Main', '-nowarn', '-proceedOnError', '-preserveAllLocals', '-parameters']
-        }
-    }
-	*/
 
     task runclient(type: JavaExec, dependsOn: [":" + settings.modname + ":downloadAssets", ":" + settings.modname + ":extractNatives"]) {
         doFirst {
@@ -161,7 +126,6 @@ project(':' + settings.modname) {
                 into "$buildDir/classes/java/main"
             }
         }
-//        jvmArgs = ['-verbose:class']
         classpath sourceSets.main.runtimeClasspath
         main settings.clientmain
         systemProperties = [
@@ -169,7 +133,6 @@ project(':' + settings.modname) {
                 "org.lwjgl.util.DebugLoader": "true"
         ]
         environment += [
-                //target:'fmldevclient',
                 assetDirectory: file("${gradle.getGradleUserHomeDir()}/caches/forge_gradle/assets/"),
                 nativesDirectory: extractNatives.output
         ]
@@ -183,12 +146,12 @@ project(':' + settings.modname) {
         classpath sourceSets.main.runtimeClasspath
         main settings.servermain
         args 'nogui'
-        //environment target:'fmldevserver'
         workingDir 'runserver'
     }
 }
 
-//evaluationDependsOnChildren()
+
+// Main setup task
 task setup() {
     dependsOn ':clean:extractMapped'
     dependsOn ':' + settings.modname + ':extractMapped' //These must be strings so that we can do lazy resolution. Else we need evaluationDependsOnChildren above
@@ -291,6 +254,7 @@ for (def projname : [':clean', ':' + settings.modname]) {
 
 // ===== RELEASE TASKS ===== //
 
+// Utility class for dealing with @OnlyIn(Dist.XXX) using ASM
 class DistUtils {
 	static def containsUnwanted(List<AnnotationNode> anns, String unwanted) {
 		if (anns == null)
@@ -345,6 +309,7 @@ class DistUtils {
 	}
 }
 
+// Tasks to split joined jars into client and server jars
 if (settings.pipeline == 'joined') {
 	for (def projname : [':clean', ':' + settings.modname]) {
 		project(projname) {
@@ -374,6 +339,7 @@ if (settings.pipeline == 'joined') {
 	}
 }
 
+// Tasks to produce zip files containing only the changed classes, making the final release zip
 for (def dist : ['Client', 'Server']) {
 	task('createRelease' + dist, type: Zip) {
 		def inputTaskName = settings.pipeline == 'joined' ? 'filterDist' + dist : 'reobfJar'
@@ -399,6 +365,7 @@ for (def dist : ['Client', 'Server']) {
 	}
 }
 
+// Master task to invoke all createRelease tasks
 task createRelease {
 	if (settings.pipeline != 'server')
 		dependsOn createReleaseClient
