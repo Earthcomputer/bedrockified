@@ -253,7 +253,6 @@ if (settings.reformat) {
 			outputs.file 'build/reformat/output.zip'
 			doLast {
 				def formatter = new ASFormatter()
-				formatter.setUseProperInnerClassIndenting(false)
 				def parser = new OptParser(formatter)
 				parser.parseOptionFile(rootProject.file('conf/astyle.cfg'))
 				
