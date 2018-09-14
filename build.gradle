@@ -343,13 +343,14 @@ if (settings.pipeline == 'joined') {
 for (def dist : ['Client', 'Server']) {
     task('createRelease' + dist, type: Zip) {
         def inputTaskName = settings.pipeline == 'joined' ? 'filterDist' + dist : 'reobfJar'
-        from(zipTree('projects/' + settings.modname + '/build/' + inputTaskName + '/output.zip')) {
+        def inputArchiveName = settings.pipeline == 'joined' ? 'output.zip' : 'output.jar'
+        from(zipTree('projects/' + settings.modname + '/build/' + inputTaskName + '/' + inputArchiveName)) {
             eachFile { moddedFile ->
                 def entryName = moddedFile.getRelativePath().toString()
-                def vanillaJar = new ZipFile(file('projects/clean/build/' + inputTaskName + '/output.zip'))
+                def vanillaJar = new ZipFile(file('projects/clean/build/' + inputTaskName + '/' + inputArchiveName))
                 def vanillaEntry = vanillaJar.getEntry entryName
                 if (vanillaEntry != null) {
-                    def moddedJar = new ZipFile(file('projects/' + settings.modname + '/build/' + inputTaskName + '/output.zip'))
+                    def moddedJar = new ZipFile(file('projects/' + settings.modname + '/build/' + inputTaskName + '/' + inputArchiveName))
                     def moddedEntry = moddedJar.getEntry entryName
                     if (IOUtils.contentEquals(vanillaJar.getInputStream(vanillaEntry), moddedJar.getInputStream(moddedEntry)))
                         moddedFile.exclude()
