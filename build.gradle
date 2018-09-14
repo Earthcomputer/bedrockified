@@ -32,7 +32,7 @@ import org.objectweb.asm.tree.*
 def settings = new JsonSlurper().parseText(file('conf/settings.json').text)
 
 apply plugin: 'eclipse'
-apply plugin: "com.dorongold.task-tree" // For debug purposes
+//apply plugin: "com.dorongold.task-tree" // For debug purposes
 
 group = 'com.example'
 version = '1.0'
