@@ -5,7 +5,7 @@ There is currently no support for Intellij IDEA - you have to figure that out yo
 ## Requirements
 - You need to have at least JDK8 update 92 for recompilation to work, due to a bug in earlier versions of `javac`. You also cannot use JDK9 or JDK10 yet.
 - You need to have `git` installed.
-- Eclipse Oxygen or later.
+- Eclipse Oxygen.3 or later, due to [this Eclipse bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=526911).
 
 ## First-time setup
 - Copy all the files in this repository into your new project folder.
