@@ -158,21 +158,30 @@ task setup() {
 }
 
 // ===== UTILITY ===== //
-
-def filterJar(File jarIn, File jarOut, Closure transformer) {
-    def zipIn = new ZipFile(jarIn)
-    def zipOut = new ZipOutputStream(new FileOutputStream(jarOut))
-    zipIn.entries().each { entryIn ->
-        def content = transformer.call(entryIn.getName(), zipIn.getInputStream(entryIn))
-        if (content != null) {
-            def entryOut = new ZipEntry(entryIn.getName())
-            zipOut.putNextEntry(entryOut)
-            zipOut << content
-            zipOut.closeEntry()
-        }
+class JarFilter {
+    String filename
+    final InputStream istream
+    JarFilter(String filename, InputStream istream) {
+        this.filename = filename
+        this.istream = istream
     }
-    zipIn.close()
-    zipOut.close()
+    static def filterJar(File jarIn, File jarOut, Closure transformer) {
+        def zipIn = new ZipFile(jarIn)
+        def zipOut = new ZipOutputStream(new FileOutputStream(jarOut))
+        zipIn.entries().each { entryIn ->
+            def filter = new JarFilter(entryIn.getName(), zipIn.getInputStream(entryIn))
+            transformer.delegate = filter
+            def content = transformer.call()
+            if (content != null) {
+                def entryOut = new ZipEntry(filter.filename)
+                zipOut.putNextEntry(entryOut)
+                zipOut << content
+                zipOut.closeEntry()
+            }
+        }
+        zipIn.close()
+        zipOut.close()
+    }
 }
 
 // ===== FIXES ===== //
@@ -180,30 +189,83 @@ def filterJar(File jarIn, File jarOut, Closure transformer) {
 // Fix recompilation requiring extractSrg output
 setup.dependsOn ':clean:extractSrg'
 
+// Generic fixMcpConfig task for anything that needs to modify the mcpconfig
+class FixMcpConfigTask extends DefaultTask {
+    List<Closure> configActions = []
+    List<Closure> filterActions = []
+    void configAction(Closure action) {
+        configActions.add(action)
+    }
+    void filterAction(Closure action) {
+        filterActions.add(action)
+    }
+    @TaskAction
+    void filterMcpConfig() {
+        JarFilter.filterJar(project.file(project.downloadConfig.output), project.file('build/mcp_config.zip')) {
+            if (filename == 'config.json') {
+                def cfg = new JsonSlurper().parse(istream)
+                for (def action : configActions) {
+                    action.call(cfg)
+                }
+                return new GsonBuilder().setPrettyPrinting().create().toJson(cfg)
+            } else {
+                for (def action : filterActions) {
+                    action.delegate = delegate
+                    def newistream = action.call()
+                    if (!istream.is(newistream))
+                        return newistream
+                }
+                return istream
+            }
+        }
+    }
+    
+    static def register(def proj) {
+        if (!proj.ext.properties.containsKey('registered')) {
+            proj.ext.registered = true
+            proj.downloadConfig.output = proj.file('build/mcp_config_broken.zip')
+            proj.task('fixMcpConfig', type: FixMcpConfigTask) {
+                dependsOn proj.downloadConfig
+                inputs.file proj.downloadConfig.output
+                outputs.file 'build/mcp_config.zip'
+            }
+            println(proj.tasks.getByName('fixMcpConfig'))
+            proj.loadConfig.dependsOn proj.fixMcpConfig
+        } else {
+            println("Already registered")
+        }
+    }
+}
+
 // Fix https://github.com/MinecraftForge/ForgeGradle/issues/517 - FG3 server pipeline missing download version JSON
 // Also fix recompile error on server due to mcp.client.Start being present
 if (settings.pipeline == 'server') {
     project(':mcp') {
-        downloadConfig.output = file('build/mcp_config_broken.zip')
-        task fixMcpConfig {
-            dependsOn downloadConfig
-            inputs.file downloadConfig.output
-            outputs.file 'build/mcp_config.zip'
-            doLast {
-                filterJar(file(downloadConfig.output), file('build/mcp_config.zip')) { filename, istream ->
-                    if (filename.startsWith('config/inject/mcp/client/')) {
-                        return null
-                    } else if (filename == 'config.json') {
-                        def cfg = new JsonSlurper().parse(istream)
-                        cfg.steps.server.add(1, [type: 'downloadJson'])
-                        return new GsonBuilder().setPrettyPrinting().create().toJson(cfg)
-                    } else {
-                        return istream
-                    }
-                }
+        FixMcpConfigTask.register(project)
+        fixMcpConfig.configAction {cfg -> cfg.steps.server.add(1, [type: 'downloadJson'])}
+        fixMcpConfig.filterAction {return filename.startsWith('config/inject/mcp/client/') ? null : istream}
+    }
+}
+
+// Custom SRG
+if (settings.customsrg != null) {
+    project(':mcp') {
+        FixMcpConfigTask.register(project)
+        println(project.tasks.getByName('fixMcpConfig'))
+        fixMcpConfig.configAction { cfg ->
+            cfg.version = settings.mcversion
+            cfg.data.mappings = 'config/' + settings.customsrg
+        }
+        fixMcpConfig.filterAction {
+            if (filename == 'config/joined.tsrg') {
+                filename = 'config/' + settings.customsrg
+                return new FileInputStream(rootProject.file('conf/' + settings.customsrg))
+            } else if (filename.startsWith('patches/')) {
+                return null
+            } else {
+                return istream
             }
         }
-        loadConfig.dependsOn fixMcpConfig
     }
 }
 
@@ -219,7 +281,7 @@ if (settings.reformat) {
                 def parser = new OptParser(formatter)
                 parser.parseOptionFile(rootProject.file('conf/astyle.cfg'))
                 
-                filterJar(file(setupMCP.output), file('build/reformat/output.zip')) { filename, istream ->
+                JarFilter.filterJar(file(setupMCP.output), file('build/reformat/output.zip')) {
                     if (filename.endsWith('.java') && !filename.endsWith('package-info.java')) {
                         def sw = new StringWriter()
                         try {
@@ -322,7 +384,7 @@ if (settings.pipeline == 'joined') {
                     inputs.file reobfJar.output
                     outputs.file 'build/filterDist' + dists[idx] + '/output.zip'
                     doLast {
-                        filterJar(file(reobfJar.output), file('build/filterDist' + dists[idx] + '/output.zip')) { filename, istream ->
+                        JarFilter.filterJar(file(reobfJar.output), file('build/filterDist' + dists[idx] + '/output.zip')) {
                             if (filename.endsWith('.class')) {
                                 return DistUtils.stripDist(istream, unwantedDists[idx]) { classname ->
                                     def zip = new ZipFile(file(reobfJar.output))
