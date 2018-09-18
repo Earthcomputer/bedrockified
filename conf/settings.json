@@ -7,5 +7,6 @@
 	"pipeline": "joined",
 	"clientmain": "mcp.client.Start",
 	"servermain": "net.minecraft.server.MinecraftServer",
-	"reformat": true
+	"reformat": true,
+	"customsrg": null
 }
