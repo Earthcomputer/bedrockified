@@ -4,9 +4,9 @@
          this.prevWindowX = this.windowX = this.monitor.getVirtualPosX() + videomode.getWidth() / 2 - this.width / 2;
          this.prevWindowY = this.windowY = this.monitor.getVirtualPosY() + videomode.getHeight() / 2 - this.height / 2;
          GLFW.glfwDefaultWindowHints();
--        this.handle = GLFW.glfwCreateWindow(this.width, this.height, "Minecraft 1.13", this.fullscreen ? this.monitor.getMonitorPointer() : 0L, 0L);
+-        this.handle = GLFW.glfwCreateWindow(this.width, this.height, "Minecraft 1.13.1", this.fullscreen ? this.monitor.getMonitorPointer() : 0L, 0L);
 +        // example client-side-only modification
-+        this.handle = GLFW.glfwCreateWindow(this.width, this.height, "ExampleMod 1.13", this.fullscreen ? this.monitor.getMonitorPointer() : 0L, 0L);
++        this.handle = GLFW.glfwCreateWindow(this.width, this.height, "ExampleMod 1.13.1", this.fullscreen ? this.monitor.getMonitorPointer() : 0L, 0L);
          mcIn.isWindowFocused = true;
          this.setMonitorFromVirtualScreen();
          GLFW.glfwMakeContextCurrent(this.handle);
