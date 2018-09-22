@@ -23,6 +23,7 @@ import groovy.json.JsonSlurper
 import java.util.zip.*
 import net.minecraftforge.gradle.patcher.task.TaskExtractMCPData
 import org.apache.commons.io.IOUtils
+import org.apache.commons.io.input.NullInputStream
 import org.objectweb.asm.*
 import org.objectweb.asm.tree.*
 
@@ -161,19 +162,37 @@ task setup() {
 class JarFilter {
     String filename
     final InputStream istream
-    JarFilter(String filename, InputStream istream) {
+    final boolean newFile
+    JarFilter(String filename, InputStream istream, boolean newFile) {
         this.filename = filename
         this.istream = istream
+        this.newFile = newFile
     }
-    static def filterJar(File jarIn, File jarOut, Closure transformer) {
-        def zipIn = new ZipFile(jarIn)
+    static def filterJar(File jarIn, File jarOut, Closure transformer, Map<File, String> additionalDirs = [:]) {
+        def existing = [] as HashSet
         def zipOut = new ZipOutputStream(new FileOutputStream(jarOut))
+        additionalDirs.each { additionalDir, prefix ->
+            additionalDir.eachFileRecurse { file ->
+                def filter = new JarFilter(prefix + additionalDir.toPath().relativize(file.toPath()).toString().replace(File.separator, '/'), file.isDirectory() ? new NullInputStream(0) : file.newInputStream(), true)
+                transformer.delegate = filter
+                def content = transformer.call()
+                if (content != null && !existing.contains(filter.filename)) {
+                    def entryOut = new ZipEntry(filter.filename)
+                    existing << filter.filename
+                    zipOut.putNextEntry(entryOut)
+                    zipOut << content
+                    zipOut.closeEntry()
+                }
+            }
+        }
+        def zipIn = new ZipFile(jarIn)
         zipIn.entries().each { entryIn ->
-            def filter = new JarFilter(entryIn.getName(), zipIn.getInputStream(entryIn))
+            def filter = new JarFilter(entryIn.getName(), zipIn.getInputStream(entryIn), false)
             transformer.delegate = filter
             def content = transformer.call()
-            if (content != null) {
+            if (content != null && !existing.contains(filter.filename)) {
                 def entryOut = new ZipEntry(filter.filename)
+                existing << filter.filename
                 zipOut.putNextEntry(entryOut)
                 zipOut << content
                 zipOut.closeEntry()
@@ -193,15 +212,19 @@ setup.dependsOn ':clean:extractSrg'
 class FixMcpConfigTask extends DefaultTask {
     List<Closure> configActions = []
     List<Closure> filterActions = []
+    Map<File, String> additionalDirs = [:]
     void configAction(Closure action) {
         configActions.add(action)
     }
     void filterAction(Closure action) {
         filterActions.add(action)
     }
+    void additionalDir(Object dir, String prefix) {
+        additionalDirs.put(project.file(dir), prefix)
+    }
     @TaskAction
     void filterMcpConfig() {
-        JarFilter.filterJar(project.file(project.downloadConfig.output), project.file('build/mcp_config.zip')) {
+        JarFilter.filterJar(project.file(project.downloadConfig.output), project.file('build/mcp_config.zip'), {
             if (filename == 'config.json') {
                 def cfg = new JsonSlurper().parse(istream)
                 for (def action : configActions) {
@@ -217,7 +240,7 @@ class FixMcpConfigTask extends DefaultTask {
                 }
                 return istream
             }
-        }
+        }, additionalDirs)
     }
     
     static def register(def proj) {
@@ -229,10 +252,7 @@ class FixMcpConfigTask extends DefaultTask {
                 inputs.file proj.downloadConfig.output
                 outputs.file 'build/mcp_config.zip'
             }
-            println(proj.tasks.getByName('fixMcpConfig'))
             proj.loadConfig.dependsOn proj.fixMcpConfig
-        } else {
-            println("Already registered")
         }
     }
 }
@@ -251,7 +271,6 @@ if (settings.pipeline == 'server') {
 if (settings.customsrg != null) {
     project(':mcp') {
         FixMcpConfigTask.register(project)
-        println(project.tasks.getByName('fixMcpConfig'))
         fixMcpConfig.configAction { cfg ->
             cfg.version = settings.mcversion
             cfg.data.mappings = 'config/' + settings.customsrg
@@ -260,12 +279,20 @@ if (settings.customsrg != null) {
             if (filename == 'config/joined.tsrg') {
                 filename = 'config/' + settings.customsrg
                 return new FileInputStream(rootProject.file('conf/' + settings.customsrg))
-            } else if (filename.startsWith('patches/')) {
+            } else if (filename.startsWith('patches/') && !newFile) {
                 return null
             } else {
                 return istream
             }
         }
+    }
+}
+
+// Custom patches
+if (rootProject.file('conf/patches/').exists()) {
+    project(':mcp') {
+        FixMcpConfigTask.register(project)
+        fixMcpConfig.additionalDir(rootProject.file('conf/patches/'), 'patches/' + settings.pipeline + '/')
     }
 }
 

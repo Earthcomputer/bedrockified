@@ -55,3 +55,6 @@ From outside Eclipse, the file structure looks a little different. However, you 
 
 ## A word of warning
 1.13 modding is still in its infancy, and there are already known bugs that occur in the decompiled code which do not occur in vanilla. If you care about maintaining vanilla behaviour, then whenever making a change which may modify a certain vanilla class, make sure to weigh up the benefit of modifying said class against the risk that there might be a decompile bug in the class. This situation is expected to improve as 1.13 modding matures, but for now you can at least minimize the effect by distributing as few modified classes as possible.
+
+## Temporary patch fixes for 1.13.1
+These enable you to recompile the game for 1.13.1, joined pipeline only. They are located in `conf/patches/` delete if you don't want them.
