@@ -1,6 +1,5 @@
 # jarmod-buildsystem-2
 Buildsystem built on top of ForgeGradle 3.0 for making JAR mods in Minecraft 1.13+
-There is currently no support for Intellij IDEA - you have to figure that out yourself - but support is planned. Use Eclipse in the mean time if you don't feel like figuring that out.
 
 ## Requirements
 - You need to have at least JDK8 update 92 for recompilation to work, due to a bug in earlier versions of `javac`. You also cannot use JDK9 or JDK10 yet.
@@ -13,8 +12,9 @@ There is currently no support for Intellij IDEA - you have to figure that out yo
 - Install ForgeGradle 3.0 by running the `install_fg3.bat` batch file from the command line on Windows, or running the `install_fg3.sh` script on Linux or Mac OS.
 - Edit `conf/settings.json` for your project. Each setting is described in more detail below.
 - Run `gradlew setup` to decompile and deobfuscate the code.
-- Run `gradlew eclipse` to setup the appropriate Eclipse projects.
-- Open Eclipse, and navigate to `File -> Import -> General -> Existing Projects into Workspace`. Navigate to and select the `projects` subdirectory, and check your mod project, and optionally the clean (unmodified) project too.
+- Run `gradlew eclipse` to setup the appropriate Eclipse projects. Do this even if you are planning on using Intellij IDEA.
+- If you use Eclipse, open Eclipse, and navigate to `File -> Import -> General -> Existing Projects into Workspace`. Navigate to and select the `projects` subdirectory, and check your mod project, and optionally the clean (unmodified) project too.
+- Otherwise, open Intellij IDEA and import the Eclipse project.
 
 ## Project layout + management
 Once you have setup the project, you should see a file structure in Eclipse which looks something like this:
