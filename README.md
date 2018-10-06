@@ -10,7 +10,6 @@ Buildsystem built on top of ForgeGradle 3.0 for making JAR mods in Minecraft 1.1
 ## First-time setup
 - Copy all the files in this repository into your new project folder.
 - Delete the example mod from inside `patches` (do not delete the `patches` directory itself) and from inside`src/main/java`.
-- Install ForgeGradle 3.0 by running the `install_fg3.bat` batch file from the command line on Windows, or running the `install_fg3.sh` script on Linux or Mac OS.
 - Edit `conf/settings.json` for your project. Each setting is described in more detail below.
 - Run `gradlew setup` to decompile and deobfuscate the code.
 - Run `gradlew eclipse` to setup the appropriate Eclipse projects. Do this even if you are planning on using Intellij IDEA.
@@ -55,7 +54,4 @@ From outside Eclipse, the file structure looks a little different. However, you 
 - `customsrg` The custom tsrg file inside the `conf/` folder, to override the one in the MCPConfig distribution, used to deobfuscate even newer Minecraft versions.
 
 ## A word of warning
-1.13 modding is still in its infancy, and there are already known bugs that occur in the decompiled code which do not occur in vanilla. If you care about maintaining vanilla behaviour, then whenever making a change which may modify a certain vanilla class, make sure to weigh up the benefit of modifying said class against the risk that there might be a decompile bug in the class. This situation is expected to improve as 1.13 modding matures, but for now you can at least minimize the effect by distributing as few modified classes as possible.
-
-## Temporary patch fixes for 1.13.1
-These enable you to recompile the game for 1.13.1, joined pipeline only. They are located in `conf/patches/` delete if you don't want them.
+1.13 modding is still in its infancy, and there are already known bugs that occur in the decompiled code which do not occur in vanilla. If you care about maintaining vanilla behaviour, then whenever making a change which may modify a certain vanilla class, make sure to weigh up the benefit of modifying said class against the risk that there might be a decompile bug in the class. This situation is constantly improving as 1.13 modding matures, but for now you can at least minimize the effect by distributing as few modified classes as possible.
