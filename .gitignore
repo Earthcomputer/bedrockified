@@ -2,3 +2,6 @@
 /projects/
 .project
 /build/
+/out/
+/.idea/
+*.iml
