@@ -1,0 +1,12 @@
+--- a/net/minecraft/world/gen/layer/GenLayerBiome.java
++++ b/net/minecraft/world/gen/layer/GenLayerBiome.java
+@@ -26,7 +26,8 @@
+    private static final int SNOWY_TAIGA = IRegistry.BIOME.getId(Biomes.SNOWY_TAIGA);
+    private static final int[] field_202743_q = new int[]{DESERT, FOREST, MOUNTAINS, SWAMP, PLAINS, TAIGA};
+    private static final int[] field_202744_r = new int[]{DESERT, DESERT, DESERT, SAVANNA, SAVANNA, PLAINS};
+-   private static final int[] field_202745_s = new int[]{FOREST, DARK_FOREST, MOUNTAINS, PLAINS, BIRCH_FOREST, SWAMP};
++   // BEDROCK: plains has weight 3 rather than 1
++   private static final int[] field_202745_s = new int[]{FOREST, DARK_FOREST, MOUNTAINS, PLAINS, PLAINS, PLAINS, BIRCH_FOREST, SWAMP};
+    private static final int[] field_202746_t = new int[]{FOREST, MOUNTAINS, TAIGA, PLAINS};
+    private static final int[] field_202747_u = new int[]{SNOWY_TUNDRA, SNOWY_TUNDRA, SNOWY_TUNDRA, SNOWY_TAIGA};
+    private final OverworldGenSettings settings;

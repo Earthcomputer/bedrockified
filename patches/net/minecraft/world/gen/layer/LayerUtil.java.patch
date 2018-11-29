@@ -1,0 +1,12 @@
+--- a/net/minecraft/world/gen/layer/LayerUtil.java
++++ b/net/minecraft/world/gen/layer/LayerUtil.java
+@@ -30,7 +30,8 @@
+       IAreaFactory<T> iareafactory = p_202829_3_;
+ 
+       for(int i = 0; i < count; ++i) {
+-         iareafactory = parent.<T>apply((IContextExtended)contextFactory.apply(seed + (long)i), iareafactory);
++         // BEDROCK: adding a constant of 1 rather than i
++         iareafactory = parent.<T>apply((IContextExtended)contextFactory.apply(seed + 1), iareafactory);
+       }
+ 
+       return iareafactory;
