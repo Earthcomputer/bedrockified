@@ -1,0 +1,11 @@
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -935,7 +935,7 @@
+    }
+ 
+    public String getServerModName() {
+-      return "vanilla";
++      return "bedrockified";
+    }
+ 
+    public CrashReport addServerInfoToCrashReport(CrashReport report) {

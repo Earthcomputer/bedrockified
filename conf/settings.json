@@ -1,12 +1,12 @@
 {
-	"modname": "examplemod",
+	"modname": "bedrockified",
 	"modversion": "1.0",
 	"mcpconfig": "1.13.1-20180929.143449",
-	"mappings": "20180921-1.13",
+	"mappings": "20181128-1.13.1",
 	"mcversion": "1.13.1",
 	"pipeline": "joined",
 	"clientmain": "mcp.client.Start",
 	"servermain": "net.minecraft.server.MinecraftServer",
-	"reformat": true,
+	"reformat": false,
 	"customsrg": null
 }
