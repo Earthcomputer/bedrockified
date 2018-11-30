@@ -32,7 +32,7 @@ public class BedrockRandom extends Random {
         this.arr[0] = initialValue;
         for (this.i = 1; this.i < 624; this.i++) {
             this.arr[i] = 1812433253
-                    * ((this.arr[this.i - 1] >> 30) ^ this.arr[this.i - 1])
+                    * ((this.arr[this.i - 1] >>> 30) ^ this.arr[this.i - 1])
                     + this.i;
         }
         this.index = 624;
@@ -70,16 +70,16 @@ public class BedrockRandom extends Random {
         if (this.i >= 227) {
             if (this.i >= 623) {
                 this.arr[623] = randomMTArray[this.arr[0] & 1]
-                        ^ ((this.arr[0] & 0x7fffffff | this.arr[623] & 0x80000000) >> 1)
+                        ^ ((this.arr[0] & 0x7fffffff | this.arr[623] & 0x80000000) >>> 1)
                         ^ this.arr[396];
             } else {
                 this.arr[this.i] = randomMTArray[this.arr[this.i + 1] & 1]
-                        ^ ((this.arr[this.i + 1] & 0x7fffffff | this.arr[this.i] & 0x80000000) >> 1)
+                        ^ ((this.arr[this.i + 1] & 0x7fffffff | this.arr[this.i] & 0x80000000) >>> 1)
                         ^ this.arr[this.i - 227];
             }
         } else {
             this.arr[this.i] = randomMTArray[this.arr[this.i + 1] & 1]
-                    ^ ((this.arr[this.i + 1] & 0x7fffffff | this.arr[this.i] & 0x80000000) >> 1)
+                    ^ ((this.arr[this.i + 1] & 0x7fffffff | this.arr[this.i] & 0x80000000) >>> 1)
                     ^ this.arr[this.i + 397];
             if (this.index < 624) {
                 this.arr[this.index] = 1812433253
@@ -90,22 +90,20 @@ public class BedrockRandom extends Random {
         }
         int v1 = i++;
         int v2 = this.arr[v1];
-        int v3 = ((v2 ^ (v2 >> 11)) << 7) & 0x9d2c5680 ^ v2 ^ (v2 >> 11);
-        return (v3 << 15) & 0xefc60000 ^ v3 ^ (((v3 << 15) & 0xefc60000 ^ v3) >> 18);
+        int v3 = ((v2 ^ (v2 >>> 11)) << 7) & 0x9d2c5680 ^ v2 ^ (v2 >>> 11);
+        return (v3 << 15) & 0xefc60000 ^ v3 ^ (((v3 << 15) & 0xefc60000 ^ v3) >>> 18);
     }
 
     private double _genRandReal2() {
-        return _genRandInt32() * TWO_POW_M32;
+        return Integer.toUnsignedLong(_genRandInt32()) * TWO_POW_M32;
     }
-
-    private Random mRandomDevice;
 
     public int nextGaussianInt(int bound) {
         return nextInt(bound) - nextInt(bound);
     }
 
-    public int nextUnsignedInt() {
-        return _genRandInt32();
+    public long nextUnsignedInt() {
+        return Integer.toUnsignedLong(_genRandInt32());
     }
 
     private void _initGenRandFast(int initialValue) {
@@ -137,8 +135,6 @@ public class BedrockRandom extends Random {
     public float nextGaussianFloat() {
         return nextFloat() - nextFloat();
     }
-
-    private int mThreadLocalRandom;
 
     @Override
     public int nextInt(int bound) {
@@ -183,7 +179,6 @@ public class BedrockRandom extends Random {
         this.haveNextNextGaussian = false;
         this.nextNextGaussian = 0;
         _initGenRandFast(seed);
-        return;
     }
 
     public float nextFloat(float bound) {
@@ -210,10 +205,6 @@ public class BedrockRandom extends Random {
 
     public int getSeed() {
         return seed;
-    }
-
-    public static void main(String[] args) {
-        BedrockRandom rand = new BedrockRandom(2345);
     }
 
 }
