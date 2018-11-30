@@ -13,6 +13,7 @@ public class BedrockRandom extends Random {
     private boolean haveNextNextGaussian; // (DWORD*) this + 626
     private float nextNextGaussian; // (float*) this + 627
     private int index; // (DWORD*) this + 628
+    private boolean valid = false;
 
     private static int[] randomMTArray = {0, 0x9908b0df};
     private static final double TWO_POW_M32 = 1.0 / (1L << 32);
@@ -111,8 +112,8 @@ public class BedrockRandom extends Random {
         this.arr[0] = initialValue;
         int v4 = initialValue;
         for (int i = 1; i < 398; i++) {
-            this.arr[i] = 1812433253 * ((v4 >> 30) ^ v4) + i;
-            v4 = 1812433253 * ((v4 >> 30) ^ v4) + i;
+            this.arr[i] = 1812433253 * ((v4 >>> 30) ^ v4) + i;
+            v4 = 1812433253 * ((v4 >>> 30) ^ v4) + i;
         }
         this.i = 624;
         this.index = 398;
@@ -161,7 +162,8 @@ public class BedrockRandom extends Random {
 
     @Override
     public void setSeed(long seed) {
-        setSeed((int) seed);
+        if (valid) // Hackfix for this being called too early in the superconstructor
+            setSeed((int) seed);
     }
 
     public void setSeed(int seed) {
@@ -181,6 +183,7 @@ public class BedrockRandom extends Random {
         this.haveNextNextGaussian = false;
         this.nextNextGaussian = 0;
         _initGenRandFast(seed);
+        return;
     }
 
     public float nextFloat(float bound) {
@@ -197,6 +200,7 @@ public class BedrockRandom extends Random {
     }
 
     public BedrockRandom(int seed) {
+        valid = true;
         _setSeed(seed);
     }
 
@@ -206,6 +210,10 @@ public class BedrockRandom extends Random {
 
     public int getSeed() {
         return seed;
+    }
+
+    public static void main(String[] args) {
+        BedrockRandom rand = new BedrockRandom(2345);
     }
 
 }
