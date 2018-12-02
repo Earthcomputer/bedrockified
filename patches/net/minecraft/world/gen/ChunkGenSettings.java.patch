@@ -1,0 +1,13 @@
+--- a/net/minecraft/world/gen/ChunkGenSettings.java
++++ b/net/minecraft/world/gen/ChunkGenSettings.java
+@@ -4,8 +4,8 @@
+ import net.minecraft.init.Blocks;
+ 
+ public class ChunkGenSettings implements IChunkGenSettings {
+-   protected int villageDistance = 32;
+-   protected int villageSeparation = 8;
++   protected int villageDistance = 40; // BEDROCK
++   protected int villageSeparation = 12; // BEDROCK
+    protected int oceanMonumentSpacing = 32;
+    protected int oceanMonumentSeparation = 5;
+    protected int strongholdDistance = 32;

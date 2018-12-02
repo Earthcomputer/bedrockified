@@ -1,0 +1,22 @@
+--- a/net/minecraft/util/SharedSeedRandom.java
++++ b/net/minecraft/util/SharedSeedRandom.java
+@@ -1,15 +1,17 @@
+ package net.minecraft.util;
+ 
++import net.earthcomputer.bedrockified.BedrockRandom;
++
+ import java.util.Random;
+ 
+-public class SharedSeedRandom extends Random {
++public class SharedSeedRandom extends BedrockRandom { // BEDROCK: changed RNG
+    private int usageCount;
+ 
+    public SharedSeedRandom() {
+    }
+ 
+    public SharedSeedRandom(long seed) {
+-      super(seed);
++      super((int) seed); // BEDROCK: 32-bit seeds
+    }
+ 
+    public void skip(int bits) {

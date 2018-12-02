@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/biome/SnowyTundraBiome.java
++++ b/net/minecraft/world/biome/SnowyTundraBiome.java
+@@ -15,10 +15,7 @@
+ import net.minecraft.world.gen.feature.ProbabilityConfig;
+ import net.minecraft.world.gen.feature.SphereReplaceConfig;
+ import net.minecraft.world.gen.feature.TallGrassConfig;
+-import net.minecraft.world.gen.feature.structure.IglooConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftStructure;
+-import net.minecraft.world.gen.feature.structure.StrongholdConfig;
++import net.minecraft.world.gen.feature.structure.*;
+ import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
+ import net.minecraft.world.gen.placement.ChanceConfig;
+ import net.minecraft.world.gen.placement.CountRangeConfig;
+@@ -32,6 +29,7 @@
+ public final class SnowyTundraBiome extends Biome {
+    public SnowyTundraBiome() {
+       super((new Biome.BiomeBuilder()).surfaceBuilder(new CompositeSurfaceBuilder(DEFAULT_SURFACE_BUILDER, GRASS_DIRT_GRAVEL_SURFACE)).precipitation(Biome.RainType.SNOW).category(Biome.Category.ICY).depth(0.125F).scale(0.05F).temperature(0.0F).downfall(0.5F).waterColor(4159204).waterFogColor(329011).parent((String)null));
++      this.addStructure(Feature.VILLAGE, new VillageConfig(0, VillagePieces.Type.OAK)); // BEDROCK: ice plains villages
+       this.addStructure(Feature.IGLOO, new IglooConfig());
+       this.addStructure(Feature.MINESHAFT, new MineshaftConfig(0.004D, MineshaftStructure.Type.NORMAL));
+       this.addStructure(Feature.STRONGHOLD, new StrongholdConfig());

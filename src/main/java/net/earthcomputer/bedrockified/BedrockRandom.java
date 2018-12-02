@@ -16,7 +16,7 @@ import java.util.Random;
 public class BedrockRandom extends Random {
 
     private static final int N = 624;
-    private static final int M = 327;
+    private static final int M = 397;
     private static final int MATRIX_A = 0x9908b0df;
     private static final int UPPER_MASK = 0x80000000;
     private static final int LOWER_MASK = 0x7fffffff;
@@ -215,6 +215,11 @@ public class BedrockRandom extends Random {
         float y = (float) nextGaussian();
         float z = (float) nextGaussian();
         return new Vec3d(x, y, z);
+    }
+
+    @Override
+    protected int next(int bits) {
+        return _genRandInt32() >>> (32 - bits);
     }
 
 

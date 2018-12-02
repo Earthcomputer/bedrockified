@@ -1,0 +1,20 @@
+--- a/net/minecraft/world/gen/feature/structure/VillageStructure.java
++++ b/net/minecraft/world/gen/feature/structure/VillageStructure.java
+@@ -45,7 +45,7 @@
+    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+       ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
+       if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
+-         Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9), Biomes.DEFAULT);
++         Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 8, 0, (chunkPosZ << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+          return chunkGen.hasStructure(biome, Feature.VILLAGE);
+       } else {
+          return false;
+@@ -53,7 +53,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.DEFAULT);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+       return new VillageStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 
