@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/gen/feature/structure/DesertPyramidStructure.java
++++ b/net/minecraft/world/gen/feature/structure/DesertPyramidStructure.java
+@@ -17,7 +17,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.PLAINS);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.PLAINS); // BEDROCK: +8, not +9
+       return new DesertPyramidStructure.Start(worldIn, random, x, z, biome);
+    }
+ 

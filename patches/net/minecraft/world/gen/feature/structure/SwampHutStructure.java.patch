@@ -1,0 +1,17 @@
+--- a/net/minecraft/world/gen/feature/structure/SwampHutStructure.java
++++ b/net/minecraft/world/gen/feature/structure/SwampHutStructure.java
+@@ -22,12 +22,12 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.PLAINS);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.PLAINS); // BEDROCK: +8, not +9
+       return new SwampHutStructure.Start(worldIn, random, x, z, biome);
+    }
+ 
+    protected int getSeedModifier() {
+-      return 14357620;
++      return 14357617; // BEDROCK: all temples have the same salt
+    }
+ 
+    public List<Biome.SpawnListEntry> getSpawnList() {

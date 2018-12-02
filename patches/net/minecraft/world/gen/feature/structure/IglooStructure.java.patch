@@ -1,0 +1,17 @@
+--- a/net/minecraft/world/gen/feature/structure/IglooStructure.java
++++ b/net/minecraft/world/gen/feature/structure/IglooStructure.java
+@@ -20,12 +20,12 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.PLAINS);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.PLAINS); // BEDROCK: +8, not +9
+       return new IglooStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 
+    protected int getSeedModifier() {
+-      return 14357618;
++      return 14357617; // BEDROCK: all temples have the same salt
+    }
+ 
+    public static class Start extends StructureStart {
