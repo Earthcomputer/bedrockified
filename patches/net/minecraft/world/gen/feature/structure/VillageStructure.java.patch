@@ -1,5 +1,14 @@
 --- a/net/minecraft/world/gen/feature/structure/VillageStructure.java
 +++ b/net/minecraft/world/gen/feature/structure/VillageStructure.java
+@@ -34,7 +34,7 @@
+       int j1 = l < 0 ? l - i + 1 : l;
+       int k1 = i1 / i;
+       int l1 = j1 / i;
+-      ((SharedSeedRandom)random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), k1, l1, 10387312);
++      ((SharedSeedRandom)random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), i1, j1, 10387312); // BEDROCK: initialize RNG with chunk coords rather than region coords (probably bug)
+       k1 = k1 * i;
+       l1 = l1 * i;
+       k1 = k1 + random.nextInt(i - j);
 @@ -45,7 +45,7 @@
     protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
        ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
