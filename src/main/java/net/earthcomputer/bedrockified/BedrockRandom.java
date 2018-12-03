@@ -74,7 +74,7 @@ public class BedrockRandom extends Random {
     @Override
     public int nextInt(int bound) {
         if (bound > 0)
-            return Math.floorMod(_genRandInt32(), bound);
+            return (int) (Integer.toUnsignedLong(_genRandInt32()) % bound);
         else
             return 0;
     }
