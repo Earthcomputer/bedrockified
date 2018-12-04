@@ -9,8 +9,13 @@
        k1 = k1 * i;
        l1 = l1 * i;
        k1 = k1 + random.nextInt(i - j);
-@@ -45,7 +45,7 @@
-    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+@@ -42,10 +42,11 @@
+       return new ChunkPos(k1, l1);
+    }
+ 
+-   protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
++   // BEDROCK: changed access from protected to public
++   public boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
        ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
        if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
 -         Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9), Biomes.DEFAULT);
@@ -18,7 +23,7 @@
           return chunkGen.hasStructure(biome, Feature.VILLAGE);
        } else {
           return false;
-@@ -53,7 +53,7 @@
+@@ -53,7 +54,7 @@
     }
  
     protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
