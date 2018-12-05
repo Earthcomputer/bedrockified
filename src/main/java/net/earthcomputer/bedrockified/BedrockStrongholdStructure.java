@@ -17,16 +17,18 @@ import java.util.Random;
 
 public class BedrockStrongholdStructure extends StrongholdStructure {
 
-    private boolean hasGeneratedPositions = false;
-    private ChunkPos[] firstStrongholds = new ChunkPos[3];
-    private VillageStructure villageGenerator;
-    private final Object lock = new Object();
-    private int villageStrongholdCount = 3;
-    private int gridSize = 200;
-    private int gridSizeMinusMargin = 150;
-    private int minimumDistance = 10;
-    private float successChance = 0.25f;
-    private int maxSearchRadius = 100;
+    private boolean hasGeneratedVillageStrongholds = false; // (DWORD*) this + 48
+    private ChunkPos[] villageStrongholds = new ChunkPos[3]; // (DWORD*) this + 50
+    private VillageStructure villageGenerator; // (DWORD*) this + 56
+
+    private final Object lock = new Object(); // (DWORD*) this + 58
+
+    private int villageStrongholdCount = 3; // (DWORD*) this + 68
+    private int gridSize = 200; // (DWORD*) this + 69
+    private int gridSizeMinusMargin = 150; // (DWORD*) this + 70
+    private int minimumDistance = 10; // (DWORD*) this + 71
+    private float successChance = 0.25f; // (DWORD*) this + 72
+    private int maxSearchRadius = 100; // (DWORD*) this + 73
 
     public BedrockStrongholdStructure(VillageStructure villageGenerator) {
         this.villageGenerator = villageGenerator;
@@ -35,34 +37,35 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
     @Override
     protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
         synchronized (lock) {
-            if (!hasGeneratedPositions)
-                generatePositions(rand, chunkGen);
+            if (!hasGeneratedVillageStrongholds)
+                generateVillageStrongholds(rand, chunkGen);
 
-            for (ChunkPos firstStronghold : firstStrongholds) {
-                if (firstStronghold.x == chunkPosX && firstStronghold.z == chunkPosZ)
+            for (ChunkPos villageStronghold : villageStrongholds) {
+                if (villageStronghold.x == chunkPosX && villageStronghold.z == chunkPosZ)
                     return true;
             }
         }
 
-        return _hasAdditionalStronghold(chunkGen, rand, chunkPosX, chunkPosZ);
+        return isScatteredStrongholdAt(chunkGen, rand, chunkPosX, chunkPosZ);
     }
 
     @Nullable
     @Override
     public BlockPos findNearest(World worldIn, IChunkGenerator<? extends IChunkGenSettings> chunkGenerator, BlockPos pos, int radius, boolean ungeneratedOnly) {
-        if (!hasGeneratedPositions)
-            generatePositions(new SharedSeedRandom(), chunkGenerator);
+        if (!hasGeneratedVillageStrongholds)
+            generateVillageStrongholds(new SharedSeedRandom(), chunkGenerator);
 
         return _getNearestStronghold(worldIn, pos);
     }
 
-    public void generatePositions(Random rand, IChunkGenerator<?> chunkGen) {
+    // bedrock name: generatePositions
+    public void generateVillageStrongholds(Random rand, IChunkGenerator<?> chunkGen) {
         rand.setSeed(chunkGen.getSeed());
         float angle = rand.nextFloat() * (float) Math.PI * 2.0f;
         int radius = rand.nextInt(16) + 40;
 
-        int innerStrongholdCount = 0;
-        while (innerStrongholdCount < firstStrongholds.length) {
+        int count = 0;
+        while (count < villageStrongholds.length) {
             int cx = MathHelper.floor(radius * Math.cos(angle));
             int cz = MathHelper.floor(radius * Math.sin(angle));
 
@@ -71,7 +74,7 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
             for (int offX = cx - 8; offX < cx + 8; offX++) {
                 for (int offZ = cz - 8; offZ < cz + 8; offZ++) {
                     if (villageGenerator.hasStartAt(chunkGen, rand, offX, offZ)) {
-                        firstStrongholds[innerStrongholdCount++] = new ChunkPos(offX, offZ);
+                        villageStrongholds[count++] = new ChunkPos(offX, offZ);
                         placedStronghold = true;
                         break outerLoop;
                     }
@@ -86,15 +89,16 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
             }
         }
 
-        hasGeneratedPositions = true;
+        hasGeneratedVillageStrongholds = true;
     }
 
-    private boolean _hasAdditionalStronghold(IChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ) {
+    // bedrock name: _hasAdditionalStronghold
+    private boolean isScatteredStrongholdAt(IChunkGenerator<?> chunkGen, Random rand, int chunkX, int chunkZ) {
         if (!_isBeyondMinimumDistance(chunkX, chunkZ))
             return false;
 
-        ChunkPos center = _getCenterOfGrid(chunkX, chunkZ);
-        StrongholdResult result = _generateStronghold(chunkGen, center);
+        ChunkPos gridCenter = _getCenterOfGrid(chunkX, chunkZ);
+        StrongholdResult result = generateScatteredStronghold(chunkGen, gridCenter);
         return result.successful && result.pos.x == chunkX && result.pos.z == chunkZ;
     }
 
@@ -111,7 +115,9 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
         return new ChunkPos(MathHelper.floor((float) chunkX / gridSize), MathHelper.floor((float) chunkZ / gridSize));
     }
 
-    private StrongholdResult _generateStronghold(IChunkGenerator<?> chunkGen, ChunkPos gridCenter) {
+    // bedrock name: _generateStronghold
+    private StrongholdResult generateScatteredStronghold(IChunkGenerator<?> chunkGen, ChunkPos gridCenter) {
+        // this check always fails because no grid center is within minimumDistance of (0, 0)
         if (!_isBeyondMinimumDistance(gridCenter.x, gridCenter.z))
             return StrongholdResult.UNSUCCESSFUL;
 
@@ -120,6 +126,7 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
         BedrockRandom rand = new BedrockRandom();
         rand.setSeed(784295783249L * gridCoords.x + 827828252345L * gridCoords.z + chunkGen.getSeed() + 97858791);
 
+        // This selects the middle 100x100 chunks of the 200x200 grid cell (with a 50 chunk margin)
         int minX = gridSize * gridCoords.x + gridSize - gridSizeMinusMargin;
         int maxX = gridSize * gridCoords.x + gridSizeMinusMargin;
         int minZ = gridSize * gridCoords.z + gridSize - gridSizeMinusMargin;
@@ -148,15 +155,15 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
                         continue;
 
                     expectedListSize += 8 * rad;
-                    if (strongholds.size() < expectedListSize) // :thonk:
+                    if (strongholds.size() < expectedListSize) // I suppose they meant size > expected? :thonk:
                         strongholds.ensureCapacity(expectedListSize);
 
-                    ChunkPos pregeneratedStronghold = _isPregeneratedStrongholdHere(gridX, gridZ);
-                    if (pregeneratedStronghold != null) {
-                        strongholds.add(new StrongholdResult(true, pregeneratedStronghold));
+                    ChunkPos villageStronghold = isVillageStrongholdAt(gridX, gridZ);
+                    if (villageStronghold != null) {
+                        strongholds.add(new StrongholdResult(true, villageStronghold));
                     } else {
                         ChunkPos gridCenter = new ChunkPos(gridX * gridSize + gridSize / 2, gridZ * gridSize + gridSize / 2);
-                        StrongholdResult result = _generateStronghold(world.getChunkProvider().getChunkGenerator(), gridCenter);
+                        StrongholdResult result = generateScatteredStronghold(world.getChunkProvider().getChunkGenerator(), gridCenter);
                         strongholds.add(result);
                     }
                 }
@@ -171,11 +178,12 @@ public class BedrockStrongholdStructure extends StrongholdStructure {
         return null;
     }
 
+    // bedrock name: _isPregeneratedStrongholdHere
     @Nullable
-    private ChunkPos _isPregeneratedStrongholdHere(int gridX, int gridZ) {
+    private ChunkPos isVillageStrongholdAt(int gridX, int gridZ) {
         synchronized (lock) {
             for (int i = 0; i < villageStrongholdCount; i++) {
-                ChunkPos cp = firstStrongholds[i];
+                ChunkPos cp = villageStrongholds[i];
                 ChunkPos gridPos = _getGridCoordinates(cp.x, cp.z);
                 if (gridPos.x == gridX && gridPos.z == gridZ)
                     return cp;
