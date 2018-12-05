@@ -1,0 +1,19 @@
+--- a/net/minecraft/world/gen/layer/GenLayerMixOceans.java
++++ b/net/minecraft/world/gen/layer/GenLayerMixOceans.java
+@@ -18,6 +18,8 @@
+          int k = 8;
+          int l = 4;
+ 
++         // BEDROCK: remove extreme shoreline check
++         /*
+          for(int i1 = -8; i1 <= 8; i1 += 4) {
+             for(int j1 = -8; j1 <= 8; j1 += 4) {
+                int k1 = area1.getValue(x + i1, z + j1);
+@@ -32,6 +34,7 @@
+                }
+             }
+          }
++         */
+ 
+          if (i == LayerUtil.DEEP_OCEAN) {
+             if (j == LayerUtil.LUKEWARM_OCEAN) {

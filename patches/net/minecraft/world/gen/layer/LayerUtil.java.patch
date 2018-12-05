@@ -1,6 +1,16 @@
 --- a/net/minecraft/world/gen/layer/LayerUtil.java
 +++ b/net/minecraft/world/gen/layer/LayerUtil.java
-@@ -30,7 +30,8 @@
+@@ -2,6 +2,9 @@
+ 
+ import com.google.common.collect.ImmutableList;
+ import java.util.function.LongFunction;
++
++import net.earthcomputer.bedrockified.BedrockAddOceanEdgeLayer;
++import net.earthcomputer.bedrockified.BedrockAddOceanTemperatureLayer;
+ import net.minecraft.init.Biomes;
+ import net.minecraft.util.registry.IRegistry;
+ import net.minecraft.world.WorldType;
+@@ -30,7 +33,8 @@
        IAreaFactory<T> iareafactory = p_202829_3_;
  
        for(int i = 0; i < count; ++i) {
@@ -10,3 +20,14 @@
        }
  
        return iareafactory;
+@@ -45,7 +49,9 @@
+       iareafactory = GenLayerAddIsland.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(50L), iareafactory);
+       iareafactory = GenLayerAddIsland.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(70L), iareafactory);
+       iareafactory = GenLayerRemoveTooMuchOcean.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(2L), iareafactory);
+-      IAreaFactory<T> iareafactory1 = OceanLayer.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(2L));
++      // BEDROCK: rewrite ocean temperature generation
++      IAreaFactory<T> iareafactory1 = BedrockAddOceanTemperatureLayer.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(2L), iareafactory);
++      iareafactory1 = BedrockAddOceanEdgeLayer.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(2L), iareafactory1);
+       iareafactory1 = repeat(2001L, GenLayerZoom.NORMAL, iareafactory1, 6, contextFactory);
+       iareafactory = GenLayerAddSnow.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(2L), iareafactory);
+       iareafactory = GenLayerAddIsland.INSTANCE.<T>apply((IContextExtended)contextFactory.apply(3L), iareafactory);
