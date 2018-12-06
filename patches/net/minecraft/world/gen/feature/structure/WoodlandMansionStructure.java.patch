@@ -1,0 +1,20 @@
+--- a/net/minecraft/world/gen/feature/structure/WoodlandMansionStructure.java
++++ b/net/minecraft/world/gen/feature/structure/WoodlandMansionStructure.java
+@@ -39,7 +39,7 @@
+    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+       ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
+       if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
+-         for(Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 9, chunkPosZ * 16 + 9, 32)) {
++         for(Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 8, chunkPosZ * 16 + 8, 32)) { // BEDROCK: +8, not +9
+             if (!chunkGen.hasStructure(biome, Feature.WOODLAND_MANSION)) {
+                return false;
+             }
+@@ -56,7 +56,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.DEFAULT);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+       return new WoodlandMansionStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 
