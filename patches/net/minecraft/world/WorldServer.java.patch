@@ -1,0 +1,29 @@
+--- a/net/minecraft/world/WorldServer.java
++++ b/net/minecraft/world/WorldServer.java
+@@ -14,6 +14,8 @@
+ import java.util.stream.Stream;
+ import javax.annotation.Nonnull;
+ import javax.annotation.Nullable;
++
++import net.earthcomputer.bedrockified.BedrockSpawnPoint;
+ import net.minecraft.block.Block;
+ import net.minecraft.block.BlockEventData;
+ import net.minecraft.block.state.IBlockState;
+@@ -596,6 +598,9 @@
+          this.worldInfo.setSpawn(BlockPos.ORIGIN.up());
+       } else {
+          BiomeProvider biomeprovider = this.chunkProvider.getChunkGenerator().getBiomeProvider();
++         // BEDROCK: replace spawn point algorithm
++         this.worldInfo.setSpawn(BedrockSpawnPoint.findSpawnPosition(settings, biomeprovider));
++         /*
+          List<Biome> list = biomeprovider.getBiomesToSpawnIn();
+          Random random = new Random(this.getSeed());
+          BlockPos blockpos = biomeprovider.findBiomePosition(0, 0, 256, list, random);
+@@ -642,6 +647,7 @@
+          if (settings.isBonusChestEnabled()) {
+             this.createBonusChest();
+          }
++         */
+ 
+       }
+    }
