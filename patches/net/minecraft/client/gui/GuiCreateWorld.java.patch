@@ -1,0 +1,29 @@
+--- a/net/minecraft/client/gui/GuiCreateWorld.java
++++ b/net/minecraft/client/gui/GuiCreateWorld.java
+@@ -4,6 +4,8 @@
+ import com.mojang.datafixers.Dynamic;
+ import com.mojang.datafixers.types.JsonOps;
+ import java.util.Random;
++
++import net.earthcomputer.bedrockified.BedrockSeed;
+ import net.minecraft.client.resources.I18n;
+ import net.minecraft.nbt.NBTDynamicOps;
+ import net.minecraft.nbt.NBTTagCompound;
+@@ -248,6 +250,9 @@
+          this.alreadyGenerated = true;
+          long i = (new Random()).nextLong();
+          String s = this.worldSeedField.getText();
++         // BEDROCK: seed conversion
++         i = BedrockSeed.getBedrockSeed(s, i);
++         /*
+          if (!StringUtils.isEmpty(s)) {
+             try {
+                long j = Long.parseLong(s);
+@@ -258,6 +263,7 @@
+                i = (long)s.hashCode();
+             }
+          }
++         */
+ 
+          WorldSettings worldsettings = new WorldSettings(i, GameType.getByName(this.gameMode), this.generateStructuresEnabled, this.hardCoreMode, WorldType.WORLD_TYPES[this.selectedIndex]);
+          worldsettings.setGeneratorOptions((JsonElement)Dynamic.convert(NBTDynamicOps.INSTANCE, JsonOps.INSTANCE, this.chunkProviderSettingsJson));

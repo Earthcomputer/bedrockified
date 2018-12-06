@@ -1,0 +1,29 @@
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -20,6 +20,8 @@
+ import java.util.concurrent.TimeUnit;
+ import java.util.function.BooleanSupplier;
+ import java.util.regex.Pattern;
++
++import net.earthcomputer.bedrockified.BedrockSeed;
+ import net.minecraft.command.CommandSource;
+ import net.minecraft.command.Commands;
+ import net.minecraft.crash.CrashReport;
+@@ -193,6 +195,9 @@
+             String s1 = this.settings.getStringProperty("level-type", "DEFAULT");
+             String s2 = this.settings.getStringProperty("generator-settings", "");
+             long k = (new Random()).nextLong();
++            // BEDROCK: seed conversion
++            k = BedrockSeed.getBedrockSeed(s, k);
++            /*
+             if (!s.isEmpty()) {
+                try {
+                   long l = Long.parseLong(s);
+@@ -203,6 +208,7 @@
+                   k = (long)s.hashCode();
+                }
+             }
++            */
+ 
+             WorldType worldtype = WorldType.byName(s1);
+             if (worldtype == null) {
