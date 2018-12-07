@@ -1,0 +1,35 @@
+--- a/net/minecraft/world/gen/feature/structure/MineshaftStructure.java
++++ b/net/minecraft/world/gen/feature/structure/MineshaftStructure.java
+@@ -11,12 +11,18 @@
+ 
+ public class MineshaftStructure extends Structure<MineshaftConfig> {
+    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+-      ((SharedSeedRandom)rand).setLargeFeatureSeed(chunkGen.getSeed(), chunkPosX, chunkPosZ);
+-      Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9), Biomes.DEFAULT);
++      // ((SharedSeedRandom)rand).setLargeFeatureSeed(chunkGen.getSeed(), chunkPosX, chunkPosZ);
++      Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 8, 0, (chunkPosZ << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+       if (chunkGen.hasStructure(biome, Feature.MINESHAFT)) {
+-         MineshaftConfig mineshaftconfig = (MineshaftConfig)chunkGen.getStructureConfig(biome, Feature.MINESHAFT);
+-         double d0 = mineshaftconfig.field_202439_a;
+-         return rand.nextDouble() < d0;
++         // BEDROCK: replace algorithm
++         rand.setSeed(chunkPosX ^ chunkPosZ ^ chunkGen.getSeed());
++         rand.nextInt();
++         float f = rand.nextFloat();
++         int minDistance = rand.nextInt(80);
++         if (f < 0.004) {
++            return minDistance < Math.max(Math.abs(chunkPosX), Math.abs(chunkPosZ));
++         }
++         return false;
+       } else {
+          return false;
+       }
+@@ -27,7 +33,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.DEFAULT);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+       return new MineshaftStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 
