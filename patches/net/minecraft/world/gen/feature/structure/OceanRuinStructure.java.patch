@@ -1,0 +1,49 @@
+--- a/net/minecraft/world/gen/feature/structure/OceanRuinStructure.java
++++ b/net/minecraft/world/gen/feature/structure/OceanRuinStructure.java
+@@ -3,13 +3,37 @@
+ import net.minecraft.util.Rotation;
+ import net.minecraft.util.SharedSeedRandom;
+ import net.minecraft.util.math.BlockPos;
++import net.minecraft.util.math.ChunkPos;
+ import net.minecraft.world.IWorld;
+ import net.minecraft.world.biome.Biome;
+ import net.minecraft.world.gen.IChunkGenerator;
+ import net.minecraft.world.gen.feature.Feature;
+ import net.minecraft.world.gen.feature.template.TemplateManager;
+ 
++import java.util.Random;
++
+ public class OceanRuinStructure extends ScatteredStructure<OceanRuinConfig> {
++   // BEDROCK: double random calls, needs reimplementation
++   @Override
++   protected ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
++      int ruinSpacing = getBiomeFeatureDistance(chunkGenerator);
++      int ruinSeparation = func_211745_b(chunkGenerator);
++      int gridX = x + ruinSpacing * spacingOffsetsX;
++      int gridZ = z + ruinSpacing * spacingOffsetsZ;
++      if (x < 0)
++         gridX -= ruinSpacing - 1;
++      if (z < 0)
++         gridZ -= ruinSpacing - 1;
++      gridX /= ruinSpacing;
++      gridZ /= ruinSpacing;
++      ((SharedSeedRandom) random).setLargeFeatureSeedWithSalt(chunkGenerator.getSeed(), gridX, gridZ, getSeedModifier());
++      int featureX = gridX * ruinSpacing;
++      int featureZ = gridZ * ruinSpacing;
++      featureX += (random.nextInt(ruinSpacing - ruinSeparation) + random.nextInt(ruinSpacing - ruinSeparation)) / 2;
++      featureZ += (random.nextInt(ruinSpacing - ruinSeparation) + random.nextInt(ruinSpacing - ruinSeparation)) / 2;
++      return new ChunkPos(featureX, featureZ);
++   }
++
+    public String getStructureName() {
+       return "Ocean_Ruin";
+    }
+@@ -27,7 +51,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), (Biome)null);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), (Biome)null); // BEDROCK: +8, not +9
+       return new OceanRuinStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 
