@@ -1,0 +1,20 @@
+--- a/net/minecraft/world/gen/feature/structure/FortressStructure.java
++++ b/net/minecraft/world/gen/feature/structure/FortressStructure.java
+@@ -27,7 +27,7 @@
+       } else if (chunkPosZ != (j << 4) + 4 + rand.nextInt(8)) {
+          return false;
+       } else {
+-         Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9), Biomes.DEFAULT);
++         Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 8, 0, (chunkPosZ << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+          return chunkGen.hasStructure(biome, Feature.FORTRESS);
+       }
+    }
+@@ -37,7 +37,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), Biomes.DEFAULT);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), Biomes.DEFAULT); // BEDROCK: +8, not +9
+       return new FortressStructure.Start(worldIn, random, x, z, biome);
+    }
+ 
