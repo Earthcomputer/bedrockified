@@ -20,3 +20,11 @@
     }
  
     public void skip(int bits) {
+@@ -61,6 +63,6 @@
+    }
+ 
+    public static Random seedSlimeChunk(int p_205190_0_, int p_205190_1_, long p_205190_2_, long p_205190_4_) {
+-      return new Random(p_205190_2_ + (long)(p_205190_0_ * p_205190_0_ * 4987142) + (long)(p_205190_0_ * 5947611) + (long)(p_205190_1_ * p_205190_1_) * 4392871L + (long)(p_205190_1_ * 389711) ^ p_205190_4_);
++      return new BedrockRandom((p_205190_0_ * 522133279) ^ p_205190_1_); // BEDROCK
+    }
+ }
