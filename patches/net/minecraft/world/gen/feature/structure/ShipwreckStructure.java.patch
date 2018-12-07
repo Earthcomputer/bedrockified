@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/gen/feature/structure/ShipwreckStructure.java
++++ b/net/minecraft/world/gen/feature/structure/ShipwreckStructure.java
+@@ -18,7 +18,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), (Biome)null);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), (Biome)null); // BEDROCK: +8, not +9
+       return new ShipwreckStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 

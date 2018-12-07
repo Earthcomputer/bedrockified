@@ -11,3 +11,14 @@
     protected int oceanMonumentSpacing = 32;
     protected int oceanMonumentSeparation = 5;
     protected int strongholdDistance = 32;
+@@ -17,8 +17,8 @@
+    protected int field_211734_k = 8;
+    protected int endCityDistance = 20;
+    protected int endCitySeparation = 11;
+-   protected int field_204749_j = 16;
+-   protected int field_211736_o = 8;
++   protected int field_204749_j = 10; // BEDROCK
++   protected int field_211736_o = 5; // BEDROCK
+    protected int mansionDistance = 80;
+    protected int field_211737_q = 20;
+    protected IBlockState defaultBlock = Blocks.STONE.getDefaultState();

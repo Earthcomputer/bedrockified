@@ -1,20 +1,26 @@
 --- a/net/minecraft/world/gen/feature/Feature.java
 +++ b/net/minecraft/world/gen/feature/Feature.java
-@@ -6,6 +6,8 @@
+@@ -6,6 +6,9 @@
  import java.util.Locale;
  import java.util.Map;
  import java.util.Random;
 +
++import net.earthcomputer.bedrockified.BedrockShipwreckStructure;
 +import net.earthcomputer.bedrockified.BedrockStrongholdStructure;
  import net.minecraft.block.state.IBlockState;
  import net.minecraft.init.Blocks;
  import net.minecraft.util.Util;
-@@ -55,7 +57,7 @@
+@@ -53,10 +56,11 @@
+    public static final Structure<JunglePyramidConfig> JUNGLE_PYRAMID = new JunglePyramidStructure();
+    public static final Structure<DesertPyramidConfig> DESERT_PYRAMID = new DesertPyramidStructure();
     public static final Structure<IglooConfig> IGLOO = new IglooStructure();
-    public static final Structure<ShipwreckConfig> SHIPWRECK = new ShipwreckStructure();
+-   public static final Structure<ShipwreckConfig> SHIPWRECK = new ShipwreckStructure();
++   //public static final Structure<ShipwreckConfig> SHIPWRECK = new ShipwreckStructure(); // BEDROCK: move down
     public static final Structure<SwampHutConfig> SWAMP_HUT = new SwampHutStructure();
 -   public static final Structure<StrongholdConfig> STRONGHOLD = new StrongholdStructure();
 +   public static final Structure<StrongholdConfig> STRONGHOLD = new BedrockStrongholdStructure((VillageStructure) VILLAGE); // BEDROCK
     public static final Structure<OceanMonumentConfig> OCEAN_MONUMENT = new OceanMonumentStructure();
++   public static final Structure<ShipwreckConfig> SHIPWRECK = new BedrockShipwreckStructure((OceanMonumentStructure) OCEAN_MONUMENT); // BEDROCK
     public static final Structure<OceanRuinConfig> OCEAN_RUIN = new OceanRuinStructure();
     public static final Structure<FortressConfig> FORTRESS = new FortressStructure();
+    public static final Structure<EndCityConfig> END_CITY = new EndCityStructure();

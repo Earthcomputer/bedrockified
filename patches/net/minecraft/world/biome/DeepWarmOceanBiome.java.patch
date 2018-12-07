@@ -1,0 +1,11 @@
+--- a/net/minecraft/world/biome/DeepWarmOceanBiome.java
++++ b/net/minecraft/world/biome/DeepWarmOceanBiome.java
+@@ -42,7 +42,7 @@
+       this.addStructure(Feature.OCEAN_RUIN, new OceanRuinConfig(OceanRuinStructure.Type.WARM, 0.3F, 0.9F));
+       this.addStructure(Feature.OCEAN_MONUMENT, new OceanMonumentConfig());
+       this.addStructure(Feature.MINESHAFT, new MineshaftConfig(0.004D, MineshaftStructure.Type.NORMAL));
+-      this.addStructure(Feature.SHIPWRECK, new ShipwreckConfig(false));
++      //this.addStructure(Feature.SHIPWRECK, new ShipwreckConfig(false)); // BEDROCK
+       this.addCarver(GenerationStage.Carving.AIR, createWorldCarverWrapper(CAVE_WORLD_CARVER, new ProbabilityConfig(0.06666667F)));
+       this.addCarver(GenerationStage.Carving.AIR, createWorldCarverWrapper(CANYON_WORLD_CARVER, new ProbabilityConfig(0.02F)));
+       this.addCarver(GenerationStage.Carving.LIQUID, createWorldCarverWrapper(UNDERWATER_CANYON_WORLD_CARVER, new ProbabilityConfig(0.02F)));

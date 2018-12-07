@@ -1,7 +1,12 @@
 --- a/net/minecraft/world/gen/feature/structure/OceanMonumentStructure.java
 +++ b/net/minecraft/world/gen/feature/structure/OceanMonumentStructure.java
-@@ -44,13 +44,13 @@
-    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+@@ -41,16 +41,17 @@
+       return new ChunkPos(k1, l1);
+    }
+ 
+-   protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
++   // BEDROCK: changed access from protected to public
++   public boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
        ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
        if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
 -         for(Biome biome : chunkGen.getBiomeProvider().getBiomesInSquare(chunkPosX * 16 + 9, chunkPosZ * 16 + 9, 16)) {
@@ -16,7 +21,7 @@
              if (biome1.getCategory() != Biome.Category.OCEAN && biome1.getCategory() != Biome.Category.RIVER) {
                 return false;
              }
-@@ -67,7 +67,7 @@
+@@ -67,7 +68,7 @@
     }
  
     protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
