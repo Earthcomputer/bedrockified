@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/biome/StoneShoreBiome.java
++++ b/net/minecraft/world/biome/StoneShoreBiome.java
+@@ -15,9 +15,7 @@
+ import net.minecraft.world.gen.feature.ProbabilityConfig;
+ import net.minecraft.world.gen.feature.SphereReplaceConfig;
+ import net.minecraft.world.gen.feature.TallGrassConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftStructure;
+-import net.minecraft.world.gen.feature.structure.StrongholdConfig;
++import net.minecraft.world.gen.feature.structure.*;
+ import net.minecraft.world.gen.placement.ChanceConfig;
+ import net.minecraft.world.gen.placement.CountRangeConfig;
+ import net.minecraft.world.gen.placement.DepthAverageConfig;
+@@ -32,6 +30,7 @@
+       super((new Biome.BiomeBuilder()).surfaceBuilder(new CompositeSurfaceBuilder(DEFAULT_SURFACE_BUILDER, STONE_STONE_GRAVEL_SURFACE)).precipitation(Biome.RainType.RAIN).category(Biome.Category.NONE).depth(0.1F).scale(0.8F).temperature(0.2F).downfall(0.3F).waterColor(4159204).waterFogColor(329011).parent((String)null));
+       this.addStructure(Feature.MINESHAFT, new MineshaftConfig(0.004D, MineshaftStructure.Type.NORMAL));
+       this.addStructure(Feature.STRONGHOLD, new StrongholdConfig());
++      this.addStructure(Feature.BURIED_TREASURE, new BuriedTreasureConfig(1f));
+       this.addCarver(GenerationStage.Carving.AIR, createWorldCarverWrapper(CAVE_WORLD_CARVER, new ProbabilityConfig(0.14285715F)));
+       this.addCarver(GenerationStage.Carving.AIR, createWorldCarverWrapper(CANYON_WORLD_CARVER, new ProbabilityConfig(0.02F)));
+       this.addStructureFeatures();

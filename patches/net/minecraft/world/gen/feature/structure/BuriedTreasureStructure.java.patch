@@ -1,0 +1,36 @@
+--- a/net/minecraft/world/gen/feature/structure/BuriedTreasureStructure.java
++++ b/net/minecraft/world/gen/feature/structure/BuriedTreasureStructure.java
+@@ -10,14 +10,27 @@
+ 
+ public class BuriedTreasureStructure extends Structure<BuriedTreasureConfig> {
+    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+-      Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos((chunkPosX << 4) + 9, 0, (chunkPosZ << 4) + 9), (Biome)null);
+-      if (chunkGen.hasStructure(biome, Feature.BURIED_TREASURE)) {
+-         ((SharedSeedRandom)rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), chunkPosX, chunkPosZ, 10387320);
+-         BuriedTreasureConfig buriedtreasureconfig = (BuriedTreasureConfig)chunkGen.getStructureConfig(biome, Feature.BURIED_TREASURE);
+-         return rand.nextFloat() < buriedtreasureconfig.chance;
+-      } else {
++      // BEDROCK: replace algorithm
++      int gridX = chunkPosX;
++      int gridZ = chunkPosZ;
++      if (chunkPosX < 0)
++         gridX -= 4 - 1;
++      if (chunkPosZ < 0)
++         gridZ -= 4 - 1;
++      gridX /= 4;
++      gridZ /= 4;
++      ((SharedSeedRandom)rand).setLargeFeatureSeedWithSalt(chunkGen.getSeed(), gridX, gridZ, 10387320);
++      int featureX = gridX * 4;
++      int featureZ = gridZ * 4;
++      featureX += (rand.nextInt(2) + rand.nextInt(2)) / 2;
++      featureZ += (rand.nextInt(2) + rand.nextInt(2)) / 2;
++      if (featureX != chunkPosX || featureZ != chunkPosZ) {
+          return false;
+       }
++      for (Biome b : chunkGen.getBiomeProvider().getBiomesInSquare((featureX << 4) + 8, (featureZ << 4) + 8, 3))
++         if (!chunkGen.hasStructure(b, this))
++            return false;
++      return true;
+    }
+ 
+    protected boolean isEnabledIn(IWorld worldIn) {
