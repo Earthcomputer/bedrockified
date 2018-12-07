@@ -1,13 +1,36 @@
-# jarmod-buildsystem-2
-Buildsystem built on top of ForgeGradle 3.0 for making JAR mods in Minecraft 1.13+
+# Bedrockified
+The Bedrockified project aims to implement Bedrock Edition mechanics into Java edition to ensure we understand these mechanics properly.
 
-## Requirements
+## Installation instructions
+There are two easy ways to install Bedrockified, one using [MultiMC](https://multimc.org) and one using the server JAR.
+It is also possible to install the client version of Bedrockified on the vanilla launcher, but this is complicated so there are no instructions here.
+
+### MultiMC
+1. Download the client version of the Bedrockified zip from the releases page.
+1. Download and install MultiMC from [https://multimc.org] if you don't have it already.
+1. Create a new instance for Minecraft version 1.13.1 (note this is not the latest version!).
+1. Click "edit instance", and on the right, "add to Minecraft.jar".
+1. Navigate to and select the Bedrockified zip.
+1. Start the game.
+
+### Dedicated server
+1. Download the server version of the Bedrockified zip from the releases page.
+1. Download the 1.13.1 Minecraft server from [Mojang](https://launcher.mojang.com/v1/objects/fe123682e9cb30031eae351764f653500b7396c9/server.jar).
+1. Move the server JAR into a separate folder, and execute it once from the command line using `java -jar server.jar`.
+1. Open `eula.txt`, read the EULA it links to, then change the value to true.
+1. Copy the contents of the Bedrockified zip into the server jar (which is just a zip with a different file extension), overwriting existing entries. How you do this is up to you, but I recommend 7zip.
+1. Launch the server again, it should be running Bedrockified. Connect to it with a vanilla 1.13.1 client.
+
+## Installation from source + contribution
+Bedrockified uses jarmod-buildsystem-2 by Earthcomputer, built on top of ForgeGradle 3.0 for making JAR mods in Minecraft: Java Edition 1.13+
+
+### Requirements
 - You need to have at least JDK8 update 92 for recompilation to work, due to a bug in earlier versions of `javac`. You also cannot use JDK9 or JDK10 yet.
 - You need to have `git` installed.
 - Eclipse Oxygen.3 or later, due to [this Eclipse bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=526911).
 - Or Intellij
 
-## First-time setup
+### First-time setup
 - Copy all the files in this repository into your new project folder.
 - Delete the example mod from inside `patches` (do not delete the `patches` directory itself) and from inside`src/main/java`.
 - Edit `conf/settings.json` for your project. Each setting is described in more detail below.
@@ -16,7 +39,7 @@ Buildsystem built on top of ForgeGradle 3.0 for making JAR mods in Minecraft 1.1
 - If you use Eclipse, open Eclipse, and navigate to `File -> Import -> General -> Existing Projects into Workspace`. Navigate to and select the `projects` subdirectory, and check your mod project, and optionally the clean (unmodified) project too.
 - Otherwise, open Intellij IDEA and import the Eclipse project.
 
-## Project layout + management
+### Project layout + management
 Once you have setup the project, you should see a file structure in Eclipse which looks something like this:
 ```
 - src/main/java This is where all of the MINECRAFT classes go, i.e. classes which you may or may not have modified, but no classes you have added.
@@ -41,7 +64,7 @@ From outside Eclipse, the file structure looks a little different. However, you 
 - Every time you make changes to MINECRAFT classes and want to push to the public repo, you need to run `gradlew genPatches` to update the patch files in the `patches` directory. This takes a few seconds.
 - When you are ready to create a release, run `gradlew createRelease`. This may take longer than the other tasks because it is recompiling the code. Once it is done, your releases can be found in the `build/distributions` directory.
 
-## Settings you can change
+### Settings you can change
 - `modname` the name of your mod.
 - `modversion` the version your mod is on.
 - `mcpconfig` the MCPConfig version you are using.
@@ -53,5 +76,5 @@ From outside Eclipse, the file structure looks a little different. However, you 
 - `reformat` whether to run Artistic Style on the code to reformat it. Makes the build process a little slower but does mean you can change the formatting options with `conf/astyle.cfg`.
 - `customsrg` The custom tsrg file inside the `conf/` folder, to override the one in the MCPConfig distribution, used to deobfuscate even newer Minecraft versions.
 
-## A word of warning
+### A word of warning
 1.13 modding is still in its infancy, and there are already known bugs that occur in the decompiled code which do not occur in vanilla. If you care about maintaining vanilla behaviour, then whenever making a change which may modify a certain vanilla class, make sure to weigh up the benefit of modifying said class against the risk that there might be a decompile bug in the class. This situation is constantly improving as 1.13 modding matures, but for now you can at least minimize the effect by distributing as few modified classes as possible.
