@@ -63,7 +63,7 @@ public class BedrockShipwreckStructure extends ShipwreckStructure {
             return false;
 
         int radius = isShipwreckBeached(biome) ? 10 : 20;
-        for (Biome b : chunkGen.getBiomeProvider().getBiomes((chunkPosX << 4) + 8, (chunkPosZ << 4) + 8, radius, radius, false))
+        for (Biome b : chunkGen.getBiomeProvider().getBiomesInSquare((chunkPosX << 4) + 8, (chunkPosZ << 4) + 8, radius))
             if (b != biome)
                 return false;
 

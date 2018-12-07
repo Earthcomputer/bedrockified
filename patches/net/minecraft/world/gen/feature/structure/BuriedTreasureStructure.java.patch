@@ -34,3 +34,21 @@
     }
  
     protected boolean isEnabledIn(IWorld worldIn) {
+@@ -25,7 +38,7 @@
+    }
+ 
+    protected StructureStart makeStart(IWorld worldIn, IChunkGenerator<?> generator, SharedSeedRandom random, int x, int z) {
+-      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 9, 0, (z << 4) + 9), (Biome)null);
++      Biome biome = generator.getBiomeProvider().getBiome(new BlockPos((x << 4) + 8, 0, (z << 4) + 8), (Biome)null); // BEDROCK: +8, not +9
+       return new BuriedTreasureStructure.Start(worldIn, generator, random, x, z, biome);
+    }
+ 
+@@ -51,7 +64,7 @@
+       }
+ 
+       public BlockPos getPos() {
+-         return new BlockPos((this.chunkPosX << 4) + 9, 0, (this.chunkPosZ << 4) + 9);
++         return new BlockPos((this.chunkPosX << 4) + 8, 0, (this.chunkPosZ << 4) + 8); // BEDROCK: +8, not +9
+       }
+    }
+ }
