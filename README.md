@@ -7,7 +7,7 @@ It is also possible to install the client version of Bedrockified on the vanilla
 
 ### MultiMC
 1. Download the client version of the Bedrockified zip from the releases page.
-1. Download and install MultiMC from [https://multimc.org] if you don't have it already.
+1. Download and install MultiMC from [https://multimc.org](https://multimc.org) if you don't have it already.
 1. Create a new instance for Minecraft version 1.13.1 (note this is not the latest version!).
 1. Click "edit instance", and on the right, "add to Minecraft.jar".
 1. Navigate to and select the Bedrockified zip.
