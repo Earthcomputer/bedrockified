@@ -1,6 +1,13 @@
 # Bedrockified
 The Bedrockified project aims to implement Bedrock Edition mechanics into Java edition to ensure we understand these mechanics properly.
 
+## Features
+The following should have parity between Bedrockified and real Bedrock edition:
+- Biome generation (only the biomes, not every tree will be the same)
+- Overworld and Nether structure locations
+- Slime chunks
+- Spawn point
+
 ## Installation instructions
 There are two easy ways to install Bedrockified, one using [MultiMC](https://multimc.org) and one using the server JAR.
 It is also possible to install the client version of Bedrockified on the vanilla launcher, but this is complicated so there are no instructions here.
