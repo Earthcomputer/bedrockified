@@ -1,11 +1,15 @@
 package net.earthcomputer.bedrockified;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TechRockSeedSearcher {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         BedrockRandom rand = new BedrockRandom();
 
         int partialSeed = 0;
@@ -14,23 +18,26 @@ public class TechRockSeedSearcher {
             partialSeedsByTickingRange[i] = new ArrayList<>();
 
         do {
-            if (partialSeed % 1000000 == 0)
-                System.out.println(partialSeed);
+            if (partialSeed % 10000 == 0)
+                System.out.printf("%.3f%%\n", partialSeed / (double) (1L << 32) * 100);
             int tickingRange = tickingRangeRequired(rand, partialSeed);
             if (tickingRange < partialSeedsByTickingRange.length)
                 partialSeedsByTickingRange[tickingRange].add(partialSeed);
             partialSeed++;
         } while (partialSeed != 0);
 
-        System.out.println();
-        System.out.println("=========== RESULTS =============");
+        PrintWriter pw = new PrintWriter(new FileWriter(new File("witch_hut_partial_seeds.txt")));
+        System.out.println("Done.");
         for (int tickingRange = 0; tickingRange < partialSeedsByTickingRange.length; tickingRange++) {
             List<Integer> seeds = partialSeedsByTickingRange[tickingRange];
             if (!seeds.isEmpty()) {
-                System.out.println("TICKING RANGE " + tickingRange + ":");
-                seeds.forEach(seed -> System.out.println("  " + seed));
+                pw.println("TICKING RANGE " + tickingRange + ":");
+                seeds.forEach(seed -> pw.println("  " + seed));
             }
         }
+
+        pw.flush();
+        pw.close();
     }
 
     private static int tickingRangeRequired(BedrockRandom rand, int partialSeed) {
