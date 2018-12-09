@@ -32,7 +32,7 @@ public class FindTriHutGivenSeed {
         int triHutX = npos.x;
         int triHutZ = npos.z;
 
-        for (int x = 0; Math.abs(x) <= Math.abs(triHutZ); x = x <= 0 ? 1 - x : -x) {
+        for (int x = 0; Math.abs(x) <= Math.abs(triHutX) + Math.abs(triHutZ); x = x <= 0 ? 1 - x : -x) {
             System.out.println("Searching at x = " + x);
             for (PartialSeed partialSeed : partialSeeds) {
                 int z = (int) (partialSeed.getSeed() - WORLD_SEED - 14357617 - 341873128712L * x);
