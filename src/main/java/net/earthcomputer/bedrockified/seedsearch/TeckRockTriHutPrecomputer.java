@@ -1,4 +1,6 @@
-package net.earthcomputer.bedrockified;
+package net.earthcomputer.bedrockified.seedsearch;
+
+import net.earthcomputer.bedrockified.BedrockRandom;
 
 import java.io.File;
 import java.io.FileWriter;

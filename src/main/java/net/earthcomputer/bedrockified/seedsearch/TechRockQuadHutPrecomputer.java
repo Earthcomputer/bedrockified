@@ -1,4 +1,6 @@
-package net.earthcomputer.bedrockified;
+package net.earthcomputer.bedrockified.seedsearch;
+
+import net.earthcomputer.bedrockified.BedrockRandom;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TechRockSeedSearcher {
+public class TechRockQuadHutPrecomputer {
 
     private static int prevHut1X;
     private static int prevHut1Z;

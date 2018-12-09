@@ -1,4 +1,4 @@
-package net.earthcomputer.bedrockified;
+package net.earthcomputer.bedrockified.seedsearch;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -27,7 +27,6 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.OverworldGenSettings;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.structure.SwampHutStructure;
@@ -44,7 +43,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class TechRockQuadHutSearcher {
+public class FindQuadHutsGivenSeed {
+
+    private static final int WORLD_SEED = 1125144;
 
     private static List<PartialSeed> partialSeeds = new ArrayList<>();
 
@@ -52,68 +53,44 @@ public class TechRockQuadHutSearcher {
         Bootstrap.register();
 
         readPartialSeeds();
-        for (int radius = 0;; radius++) {
-            List<QuadHut> quadHuts = new ArrayList<>();
-
-            for (int x = -radius; x < radius; x++) {
-                int x_f = x - 1;
-                int z = radius - Math.abs(x) - 1;
-                getAllQuadHutsAt(x_f, z).forEach(seed -> quadHuts.add(new QuadHut(seed, x_f, z)));
-            }
-            for (int x = radius; x > -radius; x--) {
-                int x_f = x - 1;
-                int z = Math.abs(x) - radius - 1;
-                getAllQuadHutsAt(x_f, z).forEach(seed -> quadHuts.add(new QuadHut(seed, x_f, z)));
-            }
-
-            if (!quadHuts.isEmpty()) {
-                for (QuadHut quadHut : quadHuts) {
-                    System.out.println(quadHut.partialSeed.tickingRange + " " + quadHut.partialSeed.seed + " " + quadHut.regionX + " " + quadHut.regionZ);
-                }
-                break;
-            }
-        }
-    }
-
-    private static List<PartialSeed> getAllQuadHutsAt(int x, int z) {
-        int subtrahend = (int) (341873128712L * x + 132897987541L * z + 14357617);
 
         Random rand = new SharedSeedRandom();
 
-        List<PartialSeed> seeds = new ArrayList<>();
+        for (int x = -32768; x <= 32768; x++) {
+            for (PartialSeed partialSeed : partialSeeds) {
+                int z = (int) (partialSeed.seed - WORLD_SEED - 14357617 - 341873128712L * x);
+                z *= 1273103741; // multiplicative inverse of b, mod 2^32
+                if (z < -32768 || z > 32768)
+                    continue;
 
-        for (PartialSeed partialSeed : partialSeeds) {
-            int worldSeed = partialSeed.seed - subtrahend;
+                WorldInfo worldInfo = new WorldInfo();
+                worldInfo.randomSeed = Integer.toUnsignedLong(WORLD_SEED);
+                IWorld world = new FakeWorld(worldInfo);
+                OverworldGenSettings genSettings = new OverworldGenSettings();
+                OverworldBiomeProviderSettings biomeProviderSettings = new OverworldBiomeProviderSettings().setWorldInfo(worldInfo).setGeneratorSettings(genSettings);
+                BiomeProvider biomeProvider = new OverworldBiomeProvider(biomeProviderSettings);
+                ChunkGeneratorOverworld chunkGen = new ChunkGeneratorOverworld(world, biomeProvider, genSettings);
+                SwampHutStructure structure = (SwampHutStructure) Feature.SWAMP_HUT;
 
-            WorldInfo worldInfo = new WorldInfo();
-            worldInfo.randomSeed = Integer.toUnsignedLong(worldSeed);
-            IWorld world = new FakeWorld(worldInfo);
-            OverworldGenSettings genSettings = new OverworldGenSettings();
-            OverworldBiomeProviderSettings biomeProviderSettings = new OverworldBiomeProviderSettings().setWorldInfo(worldInfo).setGeneratorSettings(genSettings);
-            BiomeProvider biomeProvider = new OverworldBiomeProvider(biomeProviderSettings);
-            ChunkGeneratorOverworld chunkGen = new ChunkGeneratorOverworld(world, biomeProvider, genSettings);
-            SwampHutStructure structure = (SwampHutStructure) Feature.SWAMP_HUT;
+                ChunkPos pos = structure.getStartPositionForPosition(chunkGen, rand, x * 32, z * 32, 0, 0);
+                if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
+                    continue;
 
-            ChunkPos pos = structure.getStartPositionForPosition(chunkGen, rand, x * 32, z * 32, 0, 0);
-            if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
-                continue;
+                pos = structure.getStartPositionForPosition(chunkGen, rand, (x + 1) * 32, z * 32, 0, 0);
+                if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
+                    continue;
 
-            pos = structure.getStartPositionForPosition(chunkGen, rand, (x + 1) * 32, z * 32, 0, 0);
-            if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
-                continue;
+                pos = structure.getStartPositionForPosition(chunkGen, rand, x * 32, (z + 1) * 32, 0, 0);
+                if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
+                    continue;
 
-            pos = structure.getStartPositionForPosition(chunkGen, rand, x * 32, (z + 1) * 32, 0, 0);
-            if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
-                continue;
+                pos = structure.getStartPositionForPosition(chunkGen, rand, (x + 1) * 32, (z + 1) * 32, 0, 0);
+                if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
+                    continue;
 
-            pos = structure.getStartPositionForPosition(chunkGen, rand, (x + 1) * 32, (z + 1) * 32, 0, 0);
-            if (!structure.hasStartAt(chunkGen, rand, pos.x, pos.z))
-                continue;
-
-            seeds.add(new PartialSeed(worldSeed, partialSeed.tickingRange));
+                System.out.println(x + " " + z);
+            }
         }
-
-        return seeds;
     }
 
     private static void readPartialSeeds() throws IOException {
@@ -140,18 +117,6 @@ public class TechRockQuadHutSearcher {
                     "seed=" + seed +
                     ", tickingRange=" + tickingRange +
                     '}';
-        }
-    }
-
-    private static class QuadHut {
-        private PartialSeed partialSeed;
-        private int regionX;
-        private int regionZ;
-
-        public QuadHut(PartialSeed partialSeed, int regionX, int regionZ) {
-            this.partialSeed = partialSeed;
-            this.regionX = regionX;
-            this.regionZ = regionZ;
         }
     }
 
