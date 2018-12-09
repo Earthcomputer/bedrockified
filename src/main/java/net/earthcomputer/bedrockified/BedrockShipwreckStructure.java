@@ -21,7 +21,7 @@ public class BedrockShipwreckStructure extends ShipwreckStructure {
     }
 
     @Override
-    protected ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
+    public ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
         int shipwreckSpacing = getBiomeFeatureDistance(chunkGenerator);
         int shipwreckSeparation = func_211745_b(chunkGenerator);
 
@@ -45,7 +45,7 @@ public class BedrockShipwreckStructure extends ShipwreckStructure {
     }
 
     @Override
-    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+    public boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
         ChunkPos chunk = getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
         if (chunk.x != chunkPosX || chunk.z != chunkPosZ)
             return false;

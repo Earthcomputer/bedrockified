@@ -1,0 +1,22 @@
+--- a/net/minecraft/world/storage/WorldInfo.java
++++ b/net/minecraft/world/storage/WorldInfo.java
+@@ -33,7 +33,8 @@
+    private int versionId;
+    private boolean versionSnapshot;
+    public static final EnumDifficulty DEFAULT_DIFFICULTY = EnumDifficulty.NORMAL;
+-   private long randomSeed;
++   // BEDROCK: change to public for seed searching
++   public long randomSeed;
+    private WorldType generator = WorldType.DEFAULT;
+    private NBTTagCompound generatorOptions = new NBTTagCompound();
+    @Nullable
+@@ -80,7 +81,8 @@
+    private NBTTagCompound customBossEvents;
+    private final GameRules gameRules = new GameRules();
+ 
+-   protected WorldInfo() {
++   // BEDROCK seed searching, change to public
++   public WorldInfo() {
+       this.fixer = null;
+       this.field_209227_p = 1628;
+       this.setGeneratorOptions(new NBTTagCompound());

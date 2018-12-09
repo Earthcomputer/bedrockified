@@ -16,7 +16,7 @@
  public class OceanRuinStructure extends ScatteredStructure<OceanRuinConfig> {
 +   // BEDROCK: double random calls, needs reimplementation
 +   @Override
-+   protected ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
++   public ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
 +      int ruinSpacing = getBiomeFeatureDistance(chunkGenerator);
 +      int ruinSeparation = func_211745_b(chunkGenerator);
 +      int gridX = x + ruinSpacing * spacingOffsetsX;

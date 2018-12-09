@@ -1,7 +1,22 @@
 --- a/net/minecraft/world/gen/feature/structure/ScatteredStructure.java
 +++ b/net/minecraft/world/gen/feature/structure/ScatteredStructure.java
-@@ -30,7 +30,7 @@
-    protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
+@@ -10,7 +10,8 @@
+ import net.minecraft.world.gen.feature.IFeatureConfig;
+ 
+ public abstract class ScatteredStructure<C extends IFeatureConfig> extends Structure<C> {
+-   protected ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
++   // BEDROCK: changed to public for seed searching
++   public ChunkPos getStartPositionForPosition(IChunkGenerator<?> chunkGenerator, Random random, int x, int z, int spacingOffsetsX, int spacingOffsetsZ) {
+       int i = this.getBiomeFeatureDistance(chunkGenerator);
+       int j = this.func_211745_b(chunkGenerator);
+       int k = x + i * spacingOffsetsX;
+@@ -27,10 +28,11 @@
+       return new ChunkPos(k1, l1);
+    }
+ 
+-   protected boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
++   // BEDROCK: changed to public for seed searching
++   public boolean hasStartAt(IChunkGenerator<?> chunkGen, Random rand, int chunkPosX, int chunkPosZ) {
        ChunkPos chunkpos = this.getStartPositionForPosition(chunkGen, rand, chunkPosX, chunkPosZ, 0, 0);
        if (chunkPosX == chunkpos.x && chunkPosZ == chunkpos.z) {
 -         Biome biome = chunkGen.getBiomeProvider().getBiome(new BlockPos(chunkPosX * 16 + 9, 0, chunkPosZ * 16 + 9), (Biome)null);
