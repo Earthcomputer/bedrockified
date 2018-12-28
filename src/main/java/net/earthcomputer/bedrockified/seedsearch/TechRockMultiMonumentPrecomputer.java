@@ -120,7 +120,7 @@ public class TechRockMultiMonumentPrecomputer {
             return null;
 
         boolean isTriHutRange4 =
-                (m1X == 26 && m2X == 26 ? 1 : 0)
+                (m1X == 26 && m1Z == 26 ? 1 : 0)
                 + (m2X == 32 && m2Z == 26 ? 1 : 0)
                 + (m3X == 26 && m3Z == 32 ? 1 : 0)
                 + (m4X == 32 && m4Z == 32 ? 1 : 0)
