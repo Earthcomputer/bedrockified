@@ -41,11 +41,11 @@ public class TechRockMultiMonumentPrecomputer {
         BedrockRandom rand = new BedrockRandom();
 
         rand.setSeed(0);
-        prevMonument1X = rand.nextInt(27);
-        prevMonument1Z = rand.nextInt(27);
+        prevMonument1X = (rand.nextInt(27) + rand.nextInt(27)) / 2;
+        prevMonument1Z = (rand.nextInt(27) + rand.nextInt(27)) / 2;
         rand.setSeed(341873128712L);
-        prevMonument2X = 32 + rand.nextInt(27);
-        prevMonument2Z = rand.nextInt(27);
+        prevMonument2X = 32 + (rand.nextInt(27) + rand.nextInt(27)) / 2;
+        prevMonument2Z = (rand.nextInt(27) + rand.nextInt(27)) / 2;
 
         int partialSeed = 0;
         PrintWriter pw = new PrintWriter(new FileWriter(new File("multi_monument_partial_seeds.txt")));
@@ -77,14 +77,14 @@ public class TechRockMultiMonumentPrecomputer {
         m2Z = prevMonument2Z;
 
         rand.setSeed(partialSeed + 132897987541L);
-        prevMonument1X = rand.nextInt(27);
-        prevMonument1Z = rand.nextInt(27);
+        prevMonument1X = (rand.nextInt(27) + rand.nextInt(27)) / 2;
+        prevMonument1Z = (rand.nextInt(27) + rand.nextInt(27)) / 2;
         m3X = prevMonument1X;
         m3Z = 32 + prevMonument1Z;
 
         rand.setSeed(partialSeed + 341873128712L + 132897987541L);
-        prevMonument2X = 32 + rand.nextInt(27);
-        prevMonument2Z = rand.nextInt(27);
+        prevMonument2X = 32 + (rand.nextInt(27) + rand.nextInt(27)) / 2;
+        prevMonument2Z = (rand.nextInt(27) + rand.nextInt(27)) / 2;
         m4X = prevMonument2X;
         m4Z = 32 + prevMonument2Z;
 
