@@ -3,12 +3,12 @@ package net.earthcomputer.bedrockified.seedsearch;
 public class MultiMonumentInfo {
 
     private final int partialSeed;
-    private final boolean isTriHutRange4;
+    private final boolean isDualHutRange4;
     private final int spawningChunksRange6;
 
-    public MultiMonumentInfo(int partialSeed, boolean isTriHutRange4, int spawningChunksRange6) {
+    public MultiMonumentInfo(int partialSeed, boolean isDualHutRange4, int spawningChunksRange6) {
         this.partialSeed = partialSeed;
-        this.isTriHutRange4 = isTriHutRange4;
+        this.isDualHutRange4 = isDualHutRange4;
         this.spawningChunksRange6 = spawningChunksRange6;
     }
 
@@ -16,8 +16,8 @@ public class MultiMonumentInfo {
         return partialSeed;
     }
 
-    public boolean isTriHutRange4() {
-        return isTriHutRange4;
+    public boolean isDualHutRange4() {
+        return isDualHutRange4;
     }
 
     public int getSpawningChunksRange6() {

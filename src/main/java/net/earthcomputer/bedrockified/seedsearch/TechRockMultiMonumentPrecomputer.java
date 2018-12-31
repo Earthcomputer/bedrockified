@@ -51,12 +51,15 @@ public class TechRockMultiMonumentPrecomputer {
         PrintWriter pw = new PrintWriter(new FileWriter(new File("multi_monument_partial_seeds.txt")));
 
         int i = 0;
+        int n = 0;
         do {
             if (i % 10000 == 0)
-                System.out.printf("%.3f%%\n", Integer.toUnsignedLong(i) / (double) (1L << 32) * 100);
+                System.out.printf("%.3f%% %d\n", Integer.toUnsignedLong(i) / (double) (1L << 32) * 100, n);
             MultiMonumentInfo monumentInfo = getMonumentInfo(rand, partialSeed);
-            if (monumentInfo != null)
-                pw.println(monumentInfo.getPartialSeed() + " " + monumentInfo.isTriHutRange4() + " " + monumentInfo.getSpawningChunksRange6());
+            if (monumentInfo != null) {
+                pw.println(monumentInfo.getPartialSeed() + " " + monumentInfo.isDualHutRange4() + " " + monumentInfo.getSpawningChunksRange6());
+                n++;
+            }
             partialSeed += 132897987541L;
             i++;
         } while (partialSeed != 0);
@@ -93,14 +96,14 @@ public class TechRockMultiMonumentPrecomputer {
         for (int y = 0; y < 17; y++)
             System.arraycopy(precomputedRange, y * 17, inRangeArray, (m1Z + y) * 75 + m1X, 17);
 
+        int maxInRange = 0;
+
         for (int y = 0; y < 17; y++) {
             int srcInd = y * 17;
             int dstInd = (m2Z + y) * 75 + m2X;
             for (int x = 0; x < 17; x++)
-                inRangeArray[dstInd + x] += precomputedRange[srcInd + x];
+                maxInRange = Math.max(maxInRange, inRangeArray[dstInd + x] += precomputedRange[srcInd + x]);
         }
-
-        int maxInRange = 0;
 
         for (int y = 0; y < 17; y++) {
             int srcInd = y * 17;
@@ -116,17 +119,16 @@ public class TechRockMultiMonumentPrecomputer {
                 maxInRange = Math.max(maxInRange, inRangeArray[dstInd + x] + precomputedRange[srcInd + x]);
         }
 
-        if (maxInRange <= 50)
+        if (maxInRange < 50)
             return null;
 
-        boolean isTriHutRange4 =
-                (m1X == 26 && m1Z == 26 ? 1 : 0)
-                + (m2X == 32 && m2Z == 26 ? 1 : 0)
-                + (m3X == 26 && m3Z == 32 ? 1 : 0)
-                + (m4X == 32 && m4Z == 32 ? 1 : 0)
-                >= 3;
+        boolean isDualHutRange4 =
+                (m1X == 26 && m2X == 32 && m1Z == m2Z) // 1 and 2
+                || (m1Z == 26 && m3Z == 32 && m1X == m3X) // 1 and 3
+                || (m2Z == 26 && m4Z == 32 && m2X == m4X) // 2 and 4
+                || (m3X == 26 && m4X == 32 && m3Z == m4Z); // 3 and 4
 
-        return new MultiMonumentInfo(partialSeed, isTriHutRange4, maxInRange);
+        return new MultiMonumentInfo(partialSeed, isDualHutRange4, maxInRange);
     }
 
 }

@@ -27,6 +27,17 @@ public class SeedFindingUtils {
         return partialSeeds;
     }
 
+    public static List<MultiMonumentInfo> readMonumentInfos(String file) throws IOException {
+        List<MultiMonumentInfo> monumentInfos = new ArrayList<>();
+        for (String line : Files.readAllLines(Paths.get(file))) {
+            if (line.isEmpty())
+                continue;
+            String[] parts = line.split(" ");
+            monumentInfos.add(new MultiMonumentInfo(Integer.parseInt(parts[0]), Boolean.parseBoolean(parts[1]), Integer.parseInt(parts[2])));
+        }
+        return monumentInfos;
+    }
+
     public static ChunkGeneratorOverworld createFakeChunkGen(int worldSeed) {
         WorldInfo worldInfo = new WorldInfo();
         worldInfo.randomSeed = Integer.toUnsignedLong(worldSeed);
