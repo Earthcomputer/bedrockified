@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/biome/SunflowerPlainsBiome.java
++++ b/net/minecraft/world/biome/SunflowerPlainsBiome.java
+@@ -17,9 +17,7 @@
+ import net.minecraft.world.gen.feature.RandomDefaultFeatureListConfig;
+ import net.minecraft.world.gen.feature.SphereReplaceConfig;
+ import net.minecraft.world.gen.feature.TallGrassConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftStructure;
+-import net.minecraft.world.gen.feature.structure.StrongholdConfig;
++import net.minecraft.world.gen.feature.structure.*;
+ import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
+ import net.minecraft.world.gen.placement.ChanceConfig;
+ import net.minecraft.world.gen.placement.CountRangeConfig;
+@@ -34,6 +32,7 @@
+ public final class SunflowerPlainsBiome extends Biome {
+    protected SunflowerPlainsBiome() {
+       super((new Biome.BiomeBuilder()).surfaceBuilder(new CompositeSurfaceBuilder(DEFAULT_SURFACE_BUILDER, GRASS_DIRT_GRAVEL_SURFACE)).precipitation(Biome.RainType.RAIN).category(Biome.Category.PLAINS).depth(0.125F).scale(0.05F).temperature(0.8F).downfall(0.4F).waterColor(4159204).waterFogColor(329011).parent("plains"));
++      this.addStructure(Feature.VILLAGE, new VillageConfig(0, VillagePieces.Type.OAK)); // BEDROCK
+       this.addStructure(Feature.MINESHAFT, new MineshaftConfig(0.004D, MineshaftStructure.Type.NORMAL));
+       this.addStructure(Feature.STRONGHOLD, new StrongholdConfig());
+       this.addCarver(GenerationStage.Carving.AIR, createWorldCarverWrapper(CAVE_WORLD_CARVER, new ProbabilityConfig(0.14285715F)));

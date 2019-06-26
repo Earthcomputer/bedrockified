@@ -1,0 +1,21 @@
+--- a/net/minecraft/world/biome/SnowyTaigaHillsBiome.java
++++ b/net/minecraft/world/biome/SnowyTaigaHillsBiome.java
+@@ -16,9 +16,7 @@
+ import net.minecraft.world.gen.feature.ProbabilityConfig;
+ import net.minecraft.world.gen.feature.RandomDefaultFeatureListConfig;
+ import net.minecraft.world.gen.feature.SphereReplaceConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftConfig;
+-import net.minecraft.world.gen.feature.structure.MineshaftStructure;
+-import net.minecraft.world.gen.feature.structure.StrongholdConfig;
++import net.minecraft.world.gen.feature.structure.*;
+ import net.minecraft.world.gen.placement.AtSurfaceWithExtraConfig;
+ import net.minecraft.world.gen.placement.ChanceConfig;
+ import net.minecraft.world.gen.placement.CountRangeConfig;
+@@ -33,6 +31,7 @@
+ public final class SnowyTaigaHillsBiome extends Biome {
+    public SnowyTaigaHillsBiome() {
+       super((new Biome.BiomeBuilder()).surfaceBuilder(new CompositeSurfaceBuilder(DEFAULT_SURFACE_BUILDER, GRASS_DIRT_GRAVEL_SURFACE)).precipitation(Biome.RainType.SNOW).category(Biome.Category.TAIGA).depth(0.45F).scale(0.3F).temperature(-0.5F).downfall(0.4F).waterColor(4020182).waterFogColor(329011).parent((String)null));
++      this.addStructure(Feature.VILLAGE, new VillageConfig(0, VillagePieces.Type.SPRUCE)); // BEDROCK
+       this.addStructure(Feature.MINESHAFT, new MineshaftConfig(0.004D, MineshaftStructure.Type.NORMAL));
+       this.addStructure(Feature.STRONGHOLD, new StrongholdConfig());
+       this.addCarver(GenerationStage.Carving.AIR, createWorldCarverWrapper(CAVE_WORLD_CARVER, new ProbabilityConfig(0.14285715F)));
