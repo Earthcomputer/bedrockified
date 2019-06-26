@@ -20,7 +20,19 @@
     }
  
     public void skip(int bits) {
-@@ -61,6 +63,6 @@
+@@ -47,8 +49,9 @@
+ 
+    public long setLargeFeatureSeed(long seed, int x, int z) {
+       this.setSeed(seed);
+-      long i = this.nextLong();
+-      long j = this.nextLong();
++      // BEDROCK: replace nextLongs with nextInts
++      long i = this.nextInt();
++      long j = this.nextInt();
+       long k = (long)x * i ^ (long)z * j ^ seed;
+       this.setSeed(k);
+       return k;
+@@ -61,6 +64,6 @@
     }
  
     public static Random seedSlimeChunk(int p_205190_0_, int p_205190_1_, long p_205190_2_, long p_205190_4_) {
